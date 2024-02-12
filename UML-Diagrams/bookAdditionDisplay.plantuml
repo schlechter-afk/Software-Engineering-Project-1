@@ -409,4 +409,6 @@ BookDataService o-- Book : Aggregation
 
 BookResource --> DirectoryUtil : Dependency
 
+PaginatedLists --> PaginatedLists
+
 @enduml
