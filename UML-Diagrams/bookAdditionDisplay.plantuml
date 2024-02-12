@@ -328,19 +328,34 @@ class PaginatedLists {
     + executePaginatedQuery(paginatedList: PaginatedList<E>, queryParam: QueryParam, sortCriteria: SortCriteria): List<Object[]>
 }
 
+class BookDataService {
+        - log: Logger
+        - GOOGLE_BOOKS_SEARCH_FORMAT: String
+        - OPEN_LIBRARY_FORMAT: String
+        - executor: ExecutorService
+        - googleRateLimiter: RateLimiter
+        - openLibraryRateLimiter: RateLimiter
+        - apiKeyGoogle: String
+        - formatter: DateTimeFormatter
+        + startUp(): void
+        + initConfig(): void
+        + searchBook(rawIsbn: String): Book
+        - searchBookWithGoogle(isbn: String): Book
+        - searchBookWithOpenLibrary(isbn: String): Book
+        + downloadThumbnail(book: Book, imageUrl: String): void
+        + shutDown(): void
+}
+
 BookResource --|> BaseResource
 
-' BaseResource --> ValidationUtil
+UserDao "1" o-- "*" User : Aggregation
+UserDao "1" o-- "1" SortCriteria : Aggregation
+UserDao "1" o-- "1" PaginatedList : Aggregation
+UserDao --> PaginatedLists : Dependency
+UserDao "1" o-- "1" UserDto : Aggregation
 
-' UserBook --> Book
-' UserBook --> User
+BookDao "1" o-- "*" Book : Aggregation
 
-' BookDao --> Book
-' TagDao --> Tag
-' UserBookDao --> UserBook
-' UserBookDao --> User
-' UserBookDao --> Book
-
-' PaginatedList --> SortCriteria
+TagDao ""
 
 @enduml
