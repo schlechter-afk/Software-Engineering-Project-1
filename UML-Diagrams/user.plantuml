@@ -1,0 +1,210 @@
+@startuml User
+
+class BaseFunction {
+    - id: String
+    + getId(): String
+    + setId(id: String): void
+    + toString(): String
+}
+
+abstract class BaseResource {
+    - request: HttpServletRequest
+    - appKey: String
+    # principal: IPrincipal
+    + authenticate(): boolean
+    + checkBaseFunction(baseFunction: BaseFunction): void
+    + hasBaseFunction(baseFunction: BaseFunction): boolean
+}
+
+class User {
+  - id: String
+  - localeId: String
+  - roleId: String
+  - username: String
+  - password: String
+  - email: String
+  - theme: String
+  - firstConnection: boolean
+  - createDate: Date
+  - deleteDate: Date
+  + getId(): String
+  + getLocaleId(): String
+  + getRoleId(): String
+  + getUsername(): String
+  + getPassword(): String
+  + getEmail(): String
+  + getTheme(): String
+  + isFirstConnection(): boolean
+  + getCreateDate(): Date
+  + getDeleteDate(): Date
+  + setId(id: String): void
+  + setLocaleId(localeId: String): void
+  + setRoleId(roleId: String): void
+  + setUsername(username: String): void
+  + setPassword(password: String): void
+  + setEmail(email: String): void
+  + setTheme(theme: String): void
+  + setFirstConnection(firstConnection: boolean): void
+  + setCreateDate(createDate: Date): void
+  + setDeleteDate(deleteDate: Date): void
+  + toString(): String
+}
+
+class UserDao {
+  - authenticate(String, String): String
+  - create(User): String
+  - update(User): User
+  - updatePassword(User): User
+  - getById(String): User
+  - getActiveByUsername(String): User
+  - getActiveByPasswordResetKey(String): User
+  - delete(String): void
+  - hashPassword(String): String
+  - findAll(PaginatedList<UserDto>, SortCriteria): void
+}
+
+class UserDto {
+  - id: String
+  - localeId: String
+  - username: String
+  - email: String
+  - createTimestamp: Long
+
+  + getId(): String
+  + setId(String): void
+  + getLocaleId(): String
+  + setLocaleId(String): void
+  + getUsername(): String
+  + setUsername(String): void
+  + getEmail(): String
+  + setEmail(String): void
+  + getCreateTimestamp(): Long
+  + setCreateTimestamp(Long): void
+}
+
+class AuthenticationTokenDao {
+    +get(id: String): AuthenticationToken
+    +create(authenticationToken: AuthenticationToken): String
+    +delete(authenticationTokenId: String): void
+    +deleteOldSessionToken(userId: String): void
+    +updateLastConnectionDate(id: String): void
+    +getByUserId(userId: String): List<AuthenticationToken>
+    +deleteByUserId(userId: String, id: String): void
+}
+
+class AuthenticationToken {
+    -id: String
+    -creationDate: Date
+    -userId: String
+    -longLasted: Boolean
+    -lastConnectionDate: Date
+    +getId(): String
+    +getCreationDate(): Date
+    +getUserId(): String
+    +getLongLasted(): Boolean
+    +getLastConnectionDate(): Date
+}
+
+class RoleBaseFunctionDao {
+    +findByRoleId(roleId: String): Set<String>
+}
+
+class ThreadLocalContext {
+    +getEntityManager(): EntityManager
+}
+
+class ValidationUtil {
+  {static} EMAIL_PATTERN: Pattern
+  {static} HTTP_URL_PATTERN: Pattern
+  {static} ALPHANUMERIC_PATTERN: Pattern
+  + validateRequired(s: Object, name: String): void
+  + validateLength(s: String, name: String, lengthMin: Integer, lengthMax: Integer, nullable: boolean): String
+  + validateLength(s: String, name: String, lengthMin: Integer, lengthMax: Integer): String
+  + validateStringNotBlank(s: String, name: String): String
+  + validateHexColor(s: String, name: String, nullable: boolean): void
+  + validateEmail(s: String, name: String): void
+  + validateHttpUrl(s: String, name: String): String
+  + validateAlphanumeric(s: String, name: String): void
+  + validateDate(s: String, name: String, nullable: boolean): Date
+  + validateLocale(localeId: String, name: String, nullable: boolean): String
+  + validateTheme(themeId: String, name: String, nullable: boolean): String
+}
+
+class TokenBasedSecurityFilter {
+    -log: Logger
+    +COOKIE_NAME: String
+    +PRINCIPAL_ATTRIBUTE: String
+    +TOKEN_LONG_LIFETIME: int
+    +TOKEN_SESSION_LIFETIME: int
+    +init(filterConfig: FilterConfig): void
+    +destroy(): void
+    +doFilter(req: ServletRequest, response: ServletResponse, filterChain: FilterChain): void
+    -isTokenExpired(authenticationToken: AuthenticationToken): boolean
+    -injectAuthenticatedUser(request: HttpServletRequest, user: User): void
+    -injectAnonymousUser(request: HttpServletRequest): void
+}
+
+class SortCriteria {
+  - column: int
+  - asc: boolean
+
+  + SortCriteria(Integer, Boolean)
+  + getColumn(): int
+  + isAsc(): boolean
+}
+
+class PaginatedList<T> {
+  - limit: int
+  - offset: int
+  - resultCount: int
+  - resultList: List<T>
+
+  + PaginatedList(int, int)
+  + getResultCount(): int
+  + setResultCount(int): void
+  + getResultList(): List<T>
+  + setResultList(List<T>): void
+  + getLimit(): int
+  + getOffset(): int
+}
+
+class PaginatedLists {
+    {field} -DEFAULT_PAGE_SIZE: int
+    {field} -MAX_PAGE_SIZE: int
+    + create(pageSize: Integer, offset: Integer): PaginatedList<E>
+    + create(): PaginatedList<E>
+    + executeCountQuery(paginatedList: PaginatedList<E>, queryParam: QueryParam): void
+    + executeResultQuery(paginatedList: PaginatedList<E>, queryParam: QueryParam): List<Object[]>
+    + executePaginatedQuery(paginatedList: PaginatedList<E>, queryParam: QueryParam): List<Object[]>
+    + executePaginatedQuery(paginatedList: PaginatedList<E>, queryParam: QueryParam, sortCriteria: SortCriteria): List<Object[]>
+}
+
+class UserResource {
+    -CONSTANT: Constants
+    -authenticationTokenDao: AuthenticationTokenDao
+    -userDao: UserDao
+    +COOKIE_NAME: String
+    +register(username: String, password: String, localeId: String, email: String): Response
+    +update(password: String, email: String, themeId: String, localeId: String, firstConnection: Boolean): Response
+    +update(username: String, password: String, email: String, themeId: String, localeId: String): Response
+    +checkUsername(username: String): Response
+    +login(username: String, password: String, longLasted: boolean): Response
+    +logout(): Response
+    +delete(): Response
+    +delete(username: String): Response
+    +info(): Response
+    +view(username: String): Response
+    +list(limit: Integer, offset: Integer, sortColumn: Integer, asc: Boolean): Response
+    +session(): Response
+    +deleteSession(): Response
+}
+
+class Constants {
+    +DEFAULT_LOCALE_ID: String
+    +DEFAULT_TIMEZONE_ID: String
+    +DEFAULT_THEME_ID: String
+    +DEFAULT_ADMIN_PASSWORD: String
+    +DEFAULT_USER_ROLE: String
+}
+
+@enduml

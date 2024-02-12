@@ -1,0 +1,346 @@
+@startuml BookAddDisplay
+
+abstract class BaseResource {
+    - request: HttpServletRequest
+    - appKey: String
+    # principal: IPrincipal
+    + authenticate(): boolean
+    + checkBaseFunction(baseFunction: BaseFunction): void
+    + hasBaseFunction(baseFunction: BaseFunction): boolean
+}
+
+class BaseFunction {
+    - id: String
+    + getId(): String
+    + setId(id: String): void
+    + toString(): String
+}
+
+class BookResource {
+  +list(context: Context, responseHandler: JsonHttpResponseHandler): void
+  +info(context: Context, id: String, responseHandler: JsonHttpResponseHandler): void
+  +add(context: Context, isbn: String, responseHandler: JsonHttpResponseHandler): void
+}
+
+class UserDto {
+  - id: String
+  - localeId: String
+  - username: String
+  - email: String
+  - createTimestamp: Long
+
+  + getId(): String
+  + setId(String): void
+  + getLocaleId(): String
+  + setLocaleId(String): void
+  + getUsername(): String
+  + setUsername(String): void
+  + getEmail(): String
+  + setEmail(String): void
+  + getCreateTimestamp(): Long
+  + setCreateTimestamp(Long): void
+}
+
+class UserDao {
+  - authenticate(String, String): String
+  - create(User): String
+  - update(User): User
+  - updatePassword(User): User
+  - getById(String): User
+  - getActiveByUsername(String): User
+  - getActiveByPasswordResetKey(String): User
+  - delete(String): void
+  - hashPassword(String): String
+  - findAll(PaginatedList<UserDto>, SortCriteria): void
+}
+
+class User {
+  - id: String
+  - localeId: String
+  - roleId: String
+  - username: String
+  - password: String
+  - email: String
+  - theme: String
+  - firstConnection: boolean
+  - createDate: Date
+  - deleteDate: Date
+  + getId(): String
+  + getLocaleId(): String
+  + getRoleId(): String
+  + getUsername(): String
+  + getPassword(): String
+  + getEmail(): String
+  + getTheme(): String
+  + isFirstConnection(): boolean
+  + getCreateDate(): Date
+  + getDeleteDate(): Date
+  + setId(id: String): void
+  + setLocaleId(localeId: String): void
+  + setRoleId(roleId: String): void
+  + setUsername(username: String): void
+  + setPassword(password: String): void
+  + setEmail(email: String): void
+  + setTheme(theme: String): void
+  + setFirstConnection(firstConnection: boolean): void
+  + setCreateDate(createDate: Date): void
+  + setDeleteDate(deleteDate: Date): void
+  + toString(): String
+}
+
+class Book {
+  - id: String
+  - title: String
+  - subtitle: String
+  - author: String
+  - description: String
+  - isbn10: String
+  - isbn13: String
+  - pageCount: Long
+  - language: String
+  - publishDate: Date
+  + getId(): String
+  + getTitle(): String
+  + getSubtitle(): String
+  + getAuthor(): String
+  + getDescription(): String
+  + getIsbn10(): String
+  + getIsbn13(): String
+  + getPageCount(): Long
+  + getLanguage(): String
+  + getPublishDate(): Date
+  + setId(id: String): void
+  + setTitle(title: String): void
+  + setSubtitle(subtitle: String): void
+  + setAuthor(author: String): void
+  + setDescription(description: String): void
+  + setIsbn10(isbn10: String): void
+  + setIsbn13(isbn13: String): void
+  + setPageCount(pageCount: Long): void
+  + setLanguage(language: String): void
+  + setPublishDate(publishDate: Date): void
+  + toString(): String
+}
+
+class Tag {
+  - id: String
+  - name: String
+  - userId: String
+  - createDate: Date
+  - deleteDate: Date
+  - color: String
+  + getId(): String
+  + setId(id: String): void
+  + getUserId(): String
+  + setUserId(userId: String): void
+  + getName(): String
+  + setName(name: String): void
+  + getCreateDate(): Date
+  + setCreateDate(createDate: Date): void
+  + getDeleteDate(): Date
+  + setDeleteDate(deleteDate: Date): void
+  + getColor(): String
+  + setColor(color: String): void
+  + toString(): String
+}
+
+class UserBook {
+    - id: String
+    - bookId: String
+    - userId: String
+    - createDate: Date
+    - deleteDate: Date
+    - readDate: Date
+
+    + getId(): String
+    + setId(id: String): void
+    + getBookId(): String
+    + setBookId(bookId: String): void
+    + getUserId(): String
+    + setUserId(userId: String): void
+    + getCreateDate(): Date
+    + setCreateDate(createDate: Date): void
+    + getDeleteDate(): Date
+    + setDeleteDate(deleteDate: Date): void
+    + getReadDate(): Date
+    + setReadDate(readDate: Date): void
+}
+
+class UserBookDao {
+  +create(userBook: UserBook): String
+  +delete(id: String): void
+  +getUserBook(userBookId: String, userId: String): UserBook
+  +getUserBook(userBookId: String): UserBook
+  +getByBook(bookId: String, userId: String): UserBook
+  +findByCriteria(paginatedList: PaginatedList<UserBookDto>, criteria: UserBookCriteria, sortCriteria: SortCriteria): void
+}
+
+class UserBookDto {
+  - id: String
+  - title: String
+  - subtitle: String
+  - author: String
+  - language: String
+  - publishTimestamp: Long
+  - createTimestamp: Long
+  - readTimestamp: Long
+}
+
+class BookDao {
+  + create(book: Book): String
+  + getById(id: String): Book
+  + getByIsbn(isbn: String): Book
+}
+
+class TagDto {
+  - id: String
+  - name: String
+  - color: String
+
+  + getId(): String
+  + setId(id: String): void
+  + getName(): String
+  + setName(name: String): void
+  + getColor(): String
+  + setColor(color: String): void
+}
+
+class TagDao {
+  + getById(id: String): Tag
+  + getByUserId(userId: String): List<Tag>
+  + updateTagList(userBookId: String, tagIdSet: Set<String>): void
+  + getByUserBookId(userBookId: String): List<TagDto>
+  + create(tag: Tag): String
+  + getByName(userId: String, name: String): Tag
+  + getByTagId(userId: String, tagId: String): Tag
+  + delete(tagId: String): void
+  + findByName(userId: String, name: String): List<Tag>
+}
+
+class DirectoryUtil {
+    + getBaseDataDirectory(): File
+    + getDbDirectory(): File
+    + getBookDirectory(): File
+    + getLogDirectory(): File
+    + getThemeDirectory(): File
+    - getDataSubDirectory(subdirectory: String): File
+}
+
+class ValidationUtil {
+  {static} EMAIL_PATTERN: Pattern
+  {static} HTTP_URL_PATTERN: Pattern
+  {static} ALPHANUMERIC_PATTERN: Pattern
+  + validateRequired(s: Object, name: String): void
+  + validateLength(s: String, name: String, lengthMin: Integer, lengthMax: Integer, nullable: boolean): String
+  + validateLength(s: String, name: String, lengthMin: Integer, lengthMax: Integer): String
+  + validateStringNotBlank(s: String, name: String): String
+  + validateHexColor(s: String, name: String, nullable: boolean): void
+  + validateEmail(s: String, name: String): void
+  + validateHttpUrl(s: String, name: String): String
+  + validateAlphanumeric(s: String, name: String): void
+  + validateDate(s: String, name: String, nullable: boolean): Date
+  + validateLocale(localeId: String, name: String, nullable: boolean): String
+  + validateTheme(themeId: String, name: String, nullable: boolean): String
+}
+
+class BookImportedEvent {
+  - user: User
+  - importFile: File
+  + getUser(): User
+  + setUser(user: User): void
+  + getImportFile(): File
+  + setImportFile(importFile: File): void
+  + toString(): String
+}
+
+class UserBookCriteria {
+    - userId: String
+    - search: String
+    - read: Boolean
+    - tagIdList: List<String>
+
+    + getUserId(): String
+    + setUserId(userId: String): void
+    + getSearch(): String
+    + setSearch(search: String): void
+    + getTagIdList(): List<String>
+    + setTagIdList(tagIdList: List<String>): void
+    + getRead(): Boolean
+    + setRead(read: Boolean): void
+}
+
+class TagResource {
+    - principal: Principal
+    - authenticate(): boolean
+    - list(): Response
+    - add(name: String, color: String): Response
+    - update(id: String, name: String, color: String): Response
+    - delete(tagId: String): Response
+}
+
+class UserBookTag {
+  - id: String
+  - userBookId: String
+  - tagId: String
+  + getId(): String
+  + setId(id: String): void
+  + getUserBookId(): String
+  + setUserBookId(userBookId: String): void
+  + getTagId(): String
+  + setTagId(tagId: String): void
+  + hashCode(): int
+  + equals(obj: Object): boolean
+  + toString(): String
+}
+
+class SortCriteria {
+  - column: int
+  - asc: boolean
+
+  + SortCriteria(Integer, Boolean)
+  + getColumn(): int
+  + isAsc(): boolean
+}
+
+class PaginatedList<T> {
+  - limit: int
+  - offset: int
+  - resultCount: int
+  - resultList: List<T>
+
+  + PaginatedList(int, int)
+  + getResultCount(): int
+  + setResultCount(int): void
+  + getResultList(): List<T>
+  + setResultList(List<T>): void
+  + getLimit(): int
+  + getOffset(): int
+}
+
+class PaginatedLists {
+    {field} -DEFAULT_PAGE_SIZE: int
+    {field} -MAX_PAGE_SIZE: int
+    + create(pageSize: Integer, offset: Integer): PaginatedList<E>
+    + create(): PaginatedList<E>
+    + executeCountQuery(paginatedList: PaginatedList<E>, queryParam: QueryParam): void
+    + executeResultQuery(paginatedList: PaginatedList<E>, queryParam: QueryParam): List<Object[]>
+    + executePaginatedQuery(paginatedList: PaginatedList<E>, queryParam: QueryParam): List<Object[]>
+    + executePaginatedQuery(paginatedList: PaginatedList<E>, queryParam: QueryParam, sortCriteria: SortCriteria): List<Object[]>
+}
+
+BookResource --|> BaseResource
+
+' BaseResource --> ValidationUtil
+
+' UserBook --> Book
+' UserBook --> User
+
+' BookDao --> Book
+' TagDao --> Tag
+' UserBookDao --> UserBook
+' UserBookDao --> User
+' UserBookDao --> Book
+
+' PaginatedList --> SortCriteria
+
+@enduml
