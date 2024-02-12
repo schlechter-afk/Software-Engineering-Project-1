@@ -390,7 +390,7 @@ UserBookDao --> SortCriteria : Dependency
 UserBookDao --> UserBookCriteria : Dependency
 UserBookDao o-- UserBookDto : Aggregation
 
-' Check later from lines 394 to [TODO]:
+' Check later from lines 394 to 404:
 BookResource o-- ValidationUtil : Aggregation
 BookResource --> AppContext : Dependency
 BookResource o-- Book : Aggregation
