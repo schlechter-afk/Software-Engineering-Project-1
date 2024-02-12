@@ -168,4 +168,19 @@ class UserBookTag {
   + toString(): String
 }
 
+TagResource --|> BaseResource
+
+BookDao "1" o-- "*" Book : Aggregation
+
+TagDao o-- UserBookTag :  Aggregation
+TagDao o-- TagDto : Aggregation
+TagDao o-- Tag : Aggregation
+
+TagResource o-- TagDao : Aggregation
+TagResource o-- Tag : Aggregation
+TagResource o-- ValidationUtil : Aggregation
+
+UserBookDao o-- UserBook : Aggregation
+
+
 @enduml
