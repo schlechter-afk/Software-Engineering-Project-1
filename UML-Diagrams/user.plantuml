@@ -207,4 +207,27 @@ class Constants {
     +DEFAULT_USER_ROLE: String
 }
 
+' Inheritance
+BaseResource <|-- UserResource
+
+' Associations
+UserResource "1" --> "1" UserDao : uses >
+UserResource "1" --> "1" AuthenticationTokenDao : uses >
+UserDao "1" --> "*" User : manages >
+AuthenticationTokenDao "1" --> "*" AuthenticationToken : manages >
+AuthenticationToken "1" --> "1" User : belongs to >
+UserDao "1" --> "*" UserDto : converts to/from >
+UserResource ..> Constants : uses >
+UserDao ..> ThreadLocalContext : uses >
+UserDao ..> ValidationUtil : uses >
+UserResource ..> ValidationUtil : uses >
+TokenBasedSecurityFilter "1" --> "1" AuthenticationTokenDao : uses >
+
+' Aggregations and Compositions
+UserResource "1" o-- "1" TokenBasedSecurityFilter : contains >
+PaginatedLists "1" o-- "*" PaginatedList : creates >
+UserResource "1" o-- "1" SortCriteria : uses >
+UserDao "1" o-- "1" SortCriteria : uses >
+UserDao "1" o-- "1" PaginatedList : uses >
+
 @enduml
