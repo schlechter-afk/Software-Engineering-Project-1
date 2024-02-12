@@ -114,9 +114,9 @@ class ThreadLocalContext {
 }
 
 class ValidationUtil {
-  {static} EMAIL_PATTERN: Pattern
-  {static} HTTP_URL_PATTERN: Pattern
-  {static} ALPHANUMERIC_PATTERN: Pattern
+  {static} -EMAIL_PATTERN: Pattern
+  {static} -HTTP_URL_PATTERN: Pattern
+  {static} -ALPHANUMERIC_PATTERN: Pattern
   + validateRequired(s: Object, name: String): void
   + validateLength(s: String, name: String, lengthMin: Integer, lengthMax: Integer, nullable: boolean): String
   + validateLength(s: String, name: String, lengthMin: Integer, lengthMax: Integer): String
@@ -169,8 +169,8 @@ class PaginatedList<T> {
 }
 
 class PaginatedLists {
-    {field} -DEFAULT_PAGE_SIZE: int
-    {field} -MAX_PAGE_SIZE: int
+    {static} -DEFAULT_PAGE_SIZE: int
+    {static} -MAX_PAGE_SIZE: int
     + create(pageSize: Integer, offset: Integer): PaginatedList<E>
     + create(): PaginatedList<E>
     + executeCountQuery(paginatedList: PaginatedList<E>, queryParam: QueryParam): void
