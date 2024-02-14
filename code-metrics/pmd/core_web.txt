@@ -1,0 +1,29 @@
+project/se-project-1--_14/books-web/src/main/java/com/sismics/books/rest/resource/BaseResource.java:21:	AbstractClassWithoutAbstractMethod:	This abstract class does not have any abstract methods
+project/se-project-1--_14/books-web/src/main/java/com/sismics/books/rest/resource/BookResource.java:1:	ExcessiveImports:	A high number of imports can indicate a high degree of coupling within an object.
+project/se-project-1--_14/books-web/src/main/java/com/sismics/books/rest/resource/BookResource.java:1:	CouplingBetweenObjects:	High amount of different objects as members denotes a high coupling
+project/se-project-1--_14/books-web/src/main/java/com/sismics/books/rest/resource/BookResource.java:67:	GodClass:	Possible God Class (WMC=104, ATFD=109, TCC=0.000%)
+project/se-project-1--_14/books-web/src/main/java/com/sismics/books/rest/resource/BookResource.java:67:	CyclomaticComplexity:	The class 'BookResource' has a total cyclomatic complexity of 104 (highest 29).
+project/se-project-1--_14/books-web/src/main/java/com/sismics/books/rest/resource/BookResource.java:162:	ExcessiveMethodLength:	Avoid really long methods.
+project/se-project-1--_14/books-web/src/main/java/com/sismics/books/rest/resource/BookResource.java:162:	NcssCount:	The method 'add(String, String, String, String, String, String, Long, String, String, List<String>)' has a NCSS line count of 60.
+project/se-project-1--_14/books-web/src/main/java/com/sismics/books/rest/resource/BookResource.java:162:	CyclomaticComplexity:	The method 'add(String, String, String, String, String, String, Long, String, String, List<String>)' has a cyclomatic complexity of 23.
+project/se-project-1--_14/books-web/src/main/java/com/sismics/books/rest/resource/BookResource.java:162:	NPathComplexity:	The method 'add(String, String, String, String, String, String, Long, String, String, List<String>)' has an NPath complexity of 64512, current threshold is 200
+project/se-project-1--_14/books-web/src/main/java/com/sismics/books/rest/resource/BookResource.java:276:	ExcessiveMethodLength:	Avoid really long methods.
+project/se-project-1--_14/books-web/src/main/java/com/sismics/books/rest/resource/BookResource.java:276:	CyclomaticComplexity:	The method 'update(String, String, String, String, String, String, String, Long, String, String, List<String>)' has a cyclomatic complexity of 29.
+project/se-project-1--_14/books-web/src/main/java/com/sismics/books/rest/resource/BookResource.java:276:	NPathComplexity:	The method 'update(String, String, String, String, String, String, String, Long, String, String, List<String>)' has an NPath complexity of 358400, current threshold is 200
+project/se-project-1--_14/books-web/src/main/java/com/sismics/books/rest/resource/BookResource.java:276:	ExcessiveParameterList:	Avoid long parameter lists.
+project/se-project-1--_14/books-web/src/main/java/com/sismics/books/rest/resource/ConnectResource.java:1:	ExcessiveImports:	A high number of imports can indicate a high degree of coupling within an object.
+project/se-project-1--_14/books-web/src/main/java/com/sismics/books/rest/resource/TagResource.java:118:	CyclomaticComplexity:	The method 'update(String, String, String)' has a cyclomatic complexity of 12.
+project/se-project-1--_14/books-web/src/main/java/com/sismics/books/rest/resource/UserResource.java:1:	ExcessiveImports:	A high number of imports can indicate a high degree of coupling within an object.
+project/se-project-1--_14/books-web/src/main/java/com/sismics/books/rest/resource/UserResource.java:51:	GodClass:	Possible God Class (WMC=81, ATFD=62, TCC=0.000%)
+project/se-project-1--_14/books-web/src/main/java/com/sismics/books/rest/resource/UserResource.java:51:	CyclomaticComplexity:	The class 'UserResource' has a total cyclomatic complexity of 81 (highest 11).
+project/se-project-1--_14/books-web/src/main/java/com/sismics/books/rest/resource/UserResource.java:310:	CyclomaticComplexity:	The method 'logout()' has a cyclomatic complexity of 11.
+project/se-project-1--_14/books-web/src/test/java/com/sismics/books/rest/TestBookResource.java:35:	ExcessiveMethodLength:	Avoid really long methods.
+project/se-project-1--_14/books-web/src/test/java/com/sismics/books/rest/TestBookResource.java:35:	NcssCount:	The method 'testBookResource()' has a NCSS line count of 150.
+project/se-project-1--_14/books-web/src/test/java/com/sismics/books/rest/TestConnectResource.java:58:	ExcessiveMethodLength:	Avoid really long methods.
+project/se-project-1--_14/books-web/src/test/java/com/sismics/books/rest/TestConnectResource.java:58:	NcssCount:	The method 'testFacebook()' has a NCSS line count of 121.
+project/se-project-1--_14/books-web/src/test/java/com/sismics/books/rest/TestTagResource.java:28:	ExcessiveMethodLength:	Avoid really long methods.
+project/se-project-1--_14/books-web/src/test/java/com/sismics/books/rest/TestTagResource.java:28:	NcssCount:	The method 'testTagResource()' has a NCSS line count of 85.
+project/se-project-1--_14/books-web/src/test/java/com/sismics/books/rest/TestUserResource.java:29:	ExcessiveMethodLength:	Avoid really long methods.
+project/se-project-1--_14/books-web/src/test/java/com/sismics/books/rest/TestUserResource.java:29:	NcssCount:	The method 'testUserResource()' has a NCSS line count of 152.
+project/se-project-1--_14/books-web/src/test/java/com/sismics/books/rest/TestUserResource.java:236:	NcssCount:	The method 'testUserResourceAdmin()' has a NCSS line count of 62.
+LoosePackageCoupling	-	No packages or classes specified

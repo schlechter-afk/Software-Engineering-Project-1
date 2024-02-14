@@ -1,0 +1,26 @@
+project/se-project-1--_14/books-core/src/main/java/com/sismics/books/core/dao/jpa/UserBookDao.java:131:	CyclomaticComplexity:	The method 'findByCriteria(PaginatedList<UserBookDto>, UserBookCriteria, SortCriteria)' has a cyclomatic complexity of 11.
+project/se-project-1--_14/books-core/src/main/java/com/sismics/books/core/dao/jpa/UserBookDao.java:131:	NPathComplexity:	The method 'findByCriteria(PaginatedList<UserBookDto>, UserBookCriteria, SortCriteria)' has an NPath complexity of 240, current threshold is 200
+project/se-project-1--_14/books-core/src/main/java/com/sismics/books/core/listener/async/BookImportAsyncListener.java:50:	ExcessiveMethodLength:	Avoid really long methods.
+project/se-project-1--_14/books-core/src/main/java/com/sismics/books/core/listener/async/BookImportAsyncListener.java:50:	NPathComplexity:	The method 'on(BookImportedEvent)' has an NPath complexity of 7208, current threshold is 200
+project/se-project-1--_14/books-core/src/main/java/com/sismics/books/core/listener/async/BookImportAsyncListener.java:58:	CyclomaticComplexity:	The method 'run()' has a cyclomatic complexity of 17.
+project/se-project-1--_14/books-core/src/main/java/com/sismics/books/core/listener/async/BookImportAsyncListener.java:58:	NPathComplexity:	The method 'run()' has an NPath complexity of 3604, current threshold is 200
+project/se-project-1--_14/books-core/src/main/java/com/sismics/books/core/model/jpa/UserBook.java:183:	CyclomaticComplexity:	The method 'equals(Object)' has a cyclomatic complexity of 10.
+project/se-project-1--_14/books-core/src/main/java/com/sismics/books/core/model/jpa/UserBookTag.java:109:	CyclomaticComplexity:	The method 'equals(Object)' has a cyclomatic complexity of 10.
+project/se-project-1--_14/books-core/src/main/java/com/sismics/books/core/service/BookDataService.java:1:	ExcessiveImports:	A high number of imports can indicate a high degree of coupling within an object.
+project/se-project-1--_14/books-core/src/main/java/com/sismics/books/core/service/BookDataService.java:47:	GodClass:	Possible God Class (WMC=47, ATFD=70, TCC=23.810%)
+project/se-project-1--_14/books-core/src/main/java/com/sismics/books/core/service/BookDataService.java:167:	CyclomaticComplexity:	The method 'searchBookWithGoogle(String)' has a cyclomatic complexity of 13.
+project/se-project-1--_14/books-core/src/main/java/com/sismics/books/core/service/BookDataService.java:167:	NPathComplexity:	The method 'searchBookWithGoogle(String)' has an NPath complexity of 384, current threshold is 200
+project/se-project-1--_14/books-core/src/main/java/com/sismics/books/core/service/BookDataService.java:227:	CyclomaticComplexity:	The method 'searchBookWithOpenLibrary(String)' has a cyclomatic complexity of 20.
+project/se-project-1--_14/books-core/src/main/java/com/sismics/books/core/service/BookDataService.java:227:	NPathComplexity:	The method 'searchBookWithOpenLibrary(String)' has an NPath complexity of 15552, current threshold is 200
+project/se-project-1--_14/books-core/src/main/java/com/sismics/books/core/service/FacebookService.java:1:	ExcessiveImports:	A high number of imports can indicate a high degree of coupling within an object.
+project/se-project-1--_14/books-core/src/main/java/com/sismics/books/core/service/FacebookService.java:1:	CouplingBetweenObjects:	High amount of different objects as members denotes a high coupling
+project/se-project-1--_14/books-core/src/main/java/com/sismics/books/core/service/FacebookService.java:136:	CyclomaticComplexity:	The method 'validatePermission(String)' has a cyclomatic complexity of 14.
+project/se-project-1--_14/books-core/src/main/java/com/sismics/books/core/service/FacebookService.java:136:	NPathComplexity:	The method 'validatePermission(String)' has an NPath complexity of 272, current threshold is 200
+project/se-project-1--_14/books-core/src/main/java/com/sismics/books/core/util/TransactionUtil.java:27:	CyclomaticComplexity:	The method 'handle(Runnable)' has a cyclomatic complexity of 12.
+project/se-project-1--_14/books-core/src/main/java/com/sismics/books/core/util/mime/MimeTypeUtil.java:39:	CyclomaticComplexity:	The method 'guessMimeType(byte[])' has a cyclomatic complexity of 22.
+project/se-project-1--_14/books-core/src/main/java/com/sismics/util/ResourceUtil.java:33:	CyclomaticComplexity:	The method 'list(Class<?>, String, FilenameFilter)' has a cyclomatic complexity of 14.
+project/se-project-1--_14/books-core/src/main/java/com/sismics/util/ResourceUtil.java:33:	NPathComplexity:	The method 'list(Class<?>, String, FilenameFilter)' has an NPath complexity of 390, current threshold is 200
+project/se-project-1--_14/books-core/src/main/java/com/sismics/util/jpa/DbOpenHelper.java:60:	CyclomaticComplexity:	The method 'open()' has a cyclomatic complexity of 13.
+project/se-project-1--_14/books-core/src/main/java/com/sismics/util/log4j/MemoryAppender.java:99:	CyclomaticComplexity:	The method 'find(LogCriteria, PaginatedList<LogEntry>)' has a cyclomatic complexity of 10.
+project/se-project-1--_14/books-core/src/test/java/com/sismics/books/BaseTransactionalTest.java:16:	AbstractClassWithoutAbstractMethod:	This abstract class does not have any abstract methods
+LoosePackageCoupling	-	No packages or classes specified
