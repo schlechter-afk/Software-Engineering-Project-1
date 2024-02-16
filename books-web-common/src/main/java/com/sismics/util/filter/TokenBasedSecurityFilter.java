@@ -128,10 +128,11 @@ public class TokenBasedSecurityFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) req;
         String authToken = getAuthToken(request);
         if(authToken == null) {
+            injectAnonymousUser(request);
             filterChain.doFilter(request, response);
             return;
         }
-        
+
         // Get the corresponding server token
         AuthenticationTokenDao authenticationTokenDao = new AuthenticationTokenDao();
         AuthenticationToken authenticationToken = authenticationTokenDao.get(authToken);
@@ -139,9 +140,8 @@ public class TokenBasedSecurityFilter implements Filter {
             injectAnonymousUser(request);
             filterChain.doFilter(request, response);
             return;
-        } 
+        }
         
-        // Check if the token is still valid
         if (isTokenExpired(authenticationToken)) {
             handleExpiredToken(request, authToken, authenticationTokenDao);
             filterChain.doFilter(request, response);
@@ -151,12 +151,8 @@ public class TokenBasedSecurityFilter implements Filter {
         // Check if the user is still valid
         UserDao userDao = new UserDao();
         User user = userDao.getById(authenticationToken.getUserId());
-        if (user == null || user.getDeleteDate() != null) {
-            handleInvalidUser(user, request, authenticationToken, authenticationTokenDao);
-            filterChain.doFilter(request, response);
-            return;
-        }
-    
+        handleInvalidUser(user, request, authenticationToken, authenticationTokenDao);      
+
         filterChain.doFilter(request, response);
     }
     
