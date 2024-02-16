@@ -24,7 +24,6 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-import com.sismics.books.core.constant.Constants;
 import com.sismics.books.core.dao.jpa.AuthenticationTokenDao;
 import com.sismics.books.core.dao.jpa.RoleBaseFunctionDao;
 import com.sismics.books.core.dao.jpa.UserDao;
@@ -59,6 +58,10 @@ public class UserResource extends BaseResource {
      * @return Response
      * @throws JSONException
      */
+    private static final String DEFAULT_LOCALE_ID = "en";
+    private static final String DEFAULT_ADMIN_PASSWORD = "$2a$05$6Ny3TjrW3aVAL1or2SlcR.fhuDgPKp5jp.P9fBXwVNePgeLqb4i3C";
+    private static final String DEFAULT_USER_ROLE = "user";
+    
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
     public Response register(
@@ -81,12 +84,12 @@ public class UserResource extends BaseResource {
         
         // Create the user
         User user = new User();
-        user.setRoleId(Constants.DEFAULT_USER_ROLE);
+        user.setRoleId(DEFAULT_USER_ROLE);
         user.setUsername(username);
         user.setPassword(password);
         user.setEmail(email);
         user.setCreateDate(new Date());
-        user.setLocaleId(Constants.DEFAULT_LOCALE_ID);
+        user.setLocaleId(DEFAULT_LOCALE_ID);
         
         // Create the user
         UserDao userDao = new UserDao();
@@ -429,7 +432,7 @@ public class UserResource extends BaseResource {
             UserDao userDao = new UserDao();
             User adminUser = userDao.getById("admin");
             if (adminUser != null && adminUser.getDeleteDate() == null) {
-                response.put("is_default_password", Constants.DEFAULT_ADMIN_PASSWORD.equals(adminUser.getPassword()));
+                response.put("is_default_password", DEFAULT_ADMIN_PASSWORD.equals(adminUser.getPassword()));
             }
         } else {
             response.put("anonymous", false);
@@ -442,7 +445,7 @@ public class UserResource extends BaseResource {
             response.put("first_connection", user.isFirstConnection());
             JSONArray baseFunctions = new JSONArray(((UserPrincipal) principal).getBaseFunctionSet());
             response.put("base_functions", baseFunctions);
-            response.put("is_default_password", hasBaseFunction(BaseFunction.ADMIN) && Constants.DEFAULT_ADMIN_PASSWORD.equals(user.getPassword()));
+            response.put("is_default_password", hasBaseFunction(BaseFunction.ADMIN) && DEFAULT_ADMIN_PASSWORD.equals(user.getPassword()));
         }
         
         return Response.ok().entity(response).build();

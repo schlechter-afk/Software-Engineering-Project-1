@@ -1,6 +1,5 @@
 package com.sismics.util.filter;
 
-import com.sismics.books.core.constant.Constants;
 import com.sismics.books.core.dao.jpa.AuthenticationTokenDao;
 import com.sismics.books.core.dao.jpa.RoleBaseFunctionDao;
 import com.sismics.books.core.dao.jpa.UserDao;
@@ -35,6 +34,8 @@ public class TokenBasedSecurityFilter implements Filter {
      * Logger.
      */
     private static final Logger log = LoggerFactory.getLogger(TokenBasedSecurityFilter.class);
+
+    private static final String DEFAULT_TIMEZONE_ID = "Europe/London";
 
     /**
      * Name of the cookie used to store the authentication token.
@@ -166,7 +167,7 @@ public class TokenBasedSecurityFilter implements Filter {
     private void injectAnonymousUser(HttpServletRequest request) {
         AnonymousPrincipal anonymousPrincipal = new AnonymousPrincipal();
         anonymousPrincipal.setLocale(request.getLocale());
-        anonymousPrincipal.setDateTimeZone(DateTimeZone.forID(Constants.DEFAULT_TIMEZONE_ID));
+        anonymousPrincipal.setDateTimeZone(DateTimeZone.forID(DEFAULT_TIMEZONE_ID));
 
         request.setAttribute(PRINCIPAL_ATTRIBUTE, anonymousPrincipal);
     }

@@ -1,6 +1,4 @@
 package com.sismics.util.filter;
-
-import com.sismics.books.core.constant.Constants;
 import com.sismics.books.core.model.context.AppContext;
 import com.sismics.books.core.util.DirectoryUtil;
 import com.sismics.books.core.util.TransactionUtil;
@@ -32,11 +30,12 @@ public class RequestContextFilter implements Filter {
      * Logger.
      */
     private static final Logger log = LoggerFactory.getLogger(RequestContextFilter.class);
+    private static final String DEFAULT_LOCALE_ID = "en"
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         // Force the locale in order to not depend on the execution environment
-        Locale.setDefault(new Locale(Constants.DEFAULT_LOCALE_ID));
+        Locale.setDefault(new Locale(DEFAULT_LOCALE_ID));
 
         // Injects the webapp root
         String webappRoot = filterConfig.getServletContext().getRealPath("/");

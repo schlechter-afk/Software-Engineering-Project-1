@@ -4,7 +4,6 @@ import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.sismics.books.core.constant.Constants;
 import com.sismics.books.core.dao.jpa.LocaleDao;
 
 /**
@@ -19,6 +18,8 @@ public class LocaleUtil {
      * @param localeCode Locale code
      * @return Locate instance
      */
+    private static final String DEFAULT_LOCALE_ID = "en"
+
     public static final Locale getLocale(String localeCode) {
         String[] localeCodeArray = localeCode.split("_");
         String language = localeCodeArray[0];
@@ -52,11 +53,11 @@ public class LocaleUtil {
                 localeId = locale.getId();
             } else {
                 // The client provided an unknown locale
-                localeId = Constants.DEFAULT_LOCALE_ID;
+                localeId = DEFAULT_LOCALE_ID;
             }
         }
         if (StringUtils.isBlank(localeId)) {
-            localeId = Constants.DEFAULT_LOCALE_ID;
+            localeId = DEFAULT_LOCALE_ID;
         }
         return localeId;
     }

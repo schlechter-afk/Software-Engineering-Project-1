@@ -1,7 +1,6 @@
 package com.sismics.books.core.dao.jpa;
 
 import com.google.common.base.Joiner;
-import com.sismics.books.core.constant.Constants;
 import com.sismics.books.core.dao.jpa.dto.UserDto;
 import com.sismics.books.core.model.jpa.User;
 import com.sismics.books.core.util.jpa.PaginatedList;
@@ -30,6 +29,8 @@ public class UserDao {
      * @param password User password
      * @return ID of the authenticated user or null
      */
+    private static final String DEFAULT_THEME_ID = "default.less";
+
     public String authenticate(String username, String password) {
         EntityManager em = ThreadLocalContext.get().getEntityManager();
         Query q = em.createQuery("select u from User u where u.username = :username and u.deleteDate is null");
@@ -67,7 +68,7 @@ public class UserDao {
         
         user.setCreateDate(new Date());
         user.setPassword(hashPassword(user.getPassword()));
-        user.setTheme(Constants.DEFAULT_THEME_ID);
+        user.setTheme(DEFAULT_THEME_ID);
         em.persist(user);
         
         return user.getId();
