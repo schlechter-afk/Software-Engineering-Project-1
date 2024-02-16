@@ -18,7 +18,7 @@ public class LocaleUtil {
      * @param localeCode Locale code
      * @return Locate instance
      */
-    private static final String DEFAULT_LOCALE_ID = "en"
+    private static final String DEFAULT_LOCALE_ID = "en";
 
     public static final Locale getLocale(String localeCode) {
         String[] localeCodeArray = localeCode.split("_");

@@ -30,7 +30,7 @@ public class RequestContextFilter implements Filter {
      * Logger.
      */
     private static final Logger log = LoggerFactory.getLogger(RequestContextFilter.class);
-    private static final String DEFAULT_LOCALE_ID = "en"
+    private static final String DEFAULT_LOCALE_ID = "en";
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
