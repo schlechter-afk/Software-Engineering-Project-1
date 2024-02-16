@@ -198,7 +198,7 @@ public class BookDataService extends AbstractIdleService {
         }
         book.setAuthor(authors.get(0).getTextValue());
         book.setDescription(volumeInfo.has("description") ? volumeInfo.get("description").getTextValue() : null);
-        setBookIsbn(book, volumeInfo);
+        setGoogleBookIsbn(book, volumeInfo);
         book.setLanguage(volumeInfo.get("language").getTextValue());
         book.setPageCount(volumeInfo.has("pageCount") ? volumeInfo.get("pageCount").getLongValue() : null);
         book.setPublishDate(formatter.parseDateTime(volumeInfo.get("publishedDate").getTextValue()).toDate());
