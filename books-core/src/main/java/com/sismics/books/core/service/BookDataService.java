@@ -36,7 +36,6 @@ import com.sismics.books.core.model.jpa.Book;
 import com.sismics.books.core.util.ConfigUtil;
 import com.sismics.books.core.util.DirectoryUtil;
 import com.sismics.books.core.util.TransactionUtil;
-import com.sismics.books.core.util.mime.MimeType;
 import com.sismics.books.core.util.mime.MimeTypeUtil;
 
 /**
@@ -289,7 +288,7 @@ public class BookDataService extends AbstractIdleService {
         imageConnection.setConnectTimeout(10000);
         imageConnection.setReadTimeout(10000);
         try (InputStream inputStream = new BufferedInputStream(imageConnection.getInputStream())) {
-            if (MimeTypeUtil.guessMimeType(inputStream) != MimeType.IMAGE_JPEG) {
+            if (MimeTypeUtil.guessMimeType(inputStream) != MimeTypeUtil.IMAGE_JPEG) {
                 throw new Exception("Only JPEG images are supported as thumbnails");
             }
             
