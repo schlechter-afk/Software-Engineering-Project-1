@@ -170,17 +170,17 @@ class UserBookTag {
 
 TagResource --|> BaseResource
 
-BookDao "1" o-- "*" Book : Aggregation
+Book --> BookDao : <<uses>>
 
-TagDao o-- UserBookTag :  Aggregation
-TagDao o-- TagDto : Aggregation
-TagDao o-- Tag : Aggregation
+TagDao --> UserBookTag :  <<uses>>
+TagDao --> TagDto : <<uses>>
+TagDao --> Tag : <<uses>>
 
-TagResource o-- TagDao : Aggregation
-TagResource o-- Tag : Aggregation
-TagResource o-- ValidationUtil : Aggregation
+TagResource --> TagDao : <<uses>>
+TagResource --> Tag : <<uses>>
+TagResource --> ValidationUtil :  <<uses>>
 
-UserBookDao o-- UserBook : Aggregation
+UserBook --> UserBookDao : <<uses>>
 
 
 @enduml

@@ -14,52 +14,21 @@ abstract class BaseResource {
   + hasBaseFunction(baseFunction: BaseFunction): boolean
 }
 
-' class BaseFunction {
-'   - id: String
-'   + getId(): String
-'   + setId(id: String): void
-'   + toString(): String
-' }
-
 class BookResource {
-  +list(context: Context, responseHandler: JsonHttpResponseHandler): void
-  +info(context: Context, id: String, responseHandler: JsonHttpResponseHandler): void
-  +add(context: Context, isbn: String, responseHandler: JsonHttpResponseHandler): void
+    - principal: Principal
+    + add(isbn: String): Response
+    + delete(userBookId: String): Response
+    + add(title: String, subtitle: String, author: String, description: String, isbn10: String, isbn13: String, pageCount: Long, language: String, publishDateStr: String, tagList: List<String>): Response
+    + update(userBookId: String, title: String, subtitle: String, author: String, description: String, isbn10: String, isbn13: String, pageCount: Long, language: String, publishDateStr: String, tagList: List<String>): Response
+    + get(userBookId: String): Response
+    + cover(userBookId: String): Response
+    + updateCover(userBookId: String, imageUrl: String): Response
+    + list(limit: Integer, offset: Integer, sortColumn: Integer, asc: Boolean, search: String, read: Boolean, tagName: String): Response
+    + importFile(fileBodyPart: FormDataBodyPart): Response
+    + read(userBookId: String, read: boolean): Response
 }
 
-' class UserDto {
-'   - id: String
-'   - localeId: String
-'   - username: String
-'   - email: String
-'   - createTimestamp: Long
-
-'   + getId(): String
-'   + setId(String): void
-'   + getLocaleId(): String
-'   + setLocaleId(String): void
-'   + getUsername(): String
-'   + setUsername(String): void
-'   + getEmail(): String
-'   + setEmail(String): void
-'   + getCreateTimestamp(): Long
-'   + setCreateTimestamp(Long): void
-' }
-
-' class UserDao {
-'   - authenticate(String, String): String
-'   - create(User): String
-'   - update(User): User
-'   - updatePassword(User): User
-'   - getById(String): User
-'   - getActiveByUsername(String): User
-'   - getActiveByPasswordResetKey(String): User
-'   - delete(String): void
-'   - hashPassword(String): String
-'   - findAll(PaginatedList<UserDto>, SortCriteria): void
-' }
-
-class User #LightYellow {
+class User {
   - id: String
   - localeId: String
   - roleId: String
@@ -127,28 +96,6 @@ class Book {
   + toString(): String
 }
 
-' class Tag {
-'   - id: String
-'   - name: String
-'   - userId: String
-'   - createDate: Date
-'   - deleteDate: Date
-'   - color: String
-'   + getId(): String
-'   + setId(id: String): void
-'   + getUserId(): String
-'   + setUserId(userId: String): void
-'   + getName(): String
-'   + setName(name: String): void
-'   + getCreateDate(): Date
-'   + setCreateDate(createDate: Date): void
-'   + getDeleteDate(): Date
-'   + setDeleteDate(deleteDate: Date): void
-'   + getColor(): String
-'   + setColor(color: String): void
-'   + toString(): String
-' }
-
 class UserBook {
   - id: String
   - bookId: String
@@ -197,51 +144,6 @@ class BookDao {
   + getByIsbn(isbn: String): Book
 }
 
-
-' class TagDto {
-'   - id: String
-'   - name: String
-'   - color: String
-
-'   + getId(): String
-'   + setId(id: String): void
-'   + getName(): String
-'   + setName(name: String): void
-'   + getColor(): String
-'   + setColor(color: String): void
-' }
-
-' class TagDao {
-'   + getById(id: String): Tag
-'   + getByUserId(userId: String): List<Tag>
-'   + updateTagList(userBookId: String, tagIdSet: Set<String>): void
-'   + getByUserBookId(userBookId: String): List<TagDto>
-'   + create(tag: Tag): String
-'   + getByName(userId: String, name: String): Tag
-'   + getByTagId(userId: String, tagId: String): Tag
-'   + delete(tagId: String): void
-'   + findByName(userId: String, name: String): List<Tag>
-' }
-
-' class DirectoryUtil {
-'   + getBaseDataDirectory(): File
-'   + getDbDirectory(): File
-'   + getBookDirectory(): File
-'   + getLogDirectory(): File
-'   + getThemeDirectory(): File
-'   - getDataSubDirectory(subdirectory: String): File
-' }
-
-' class BookImportedEvent {
-'   - user: User
-'   - importFile: File
-'   + getUser(): User
-'   + setUser(user: User): void
-'   + getImportFile(): File
-'   + setImportFile(importFile: File): void
-'   + toString(): String
-' }
-
 class UserBookCriteria {
   - userId: String
   - search: String
@@ -257,33 +159,6 @@ class UserBookCriteria {
   + getRead(): Boolean
   + setRead(read: Boolean): void
 }
-
-' class TagResource {
-'   - principal: Principal
-'   - authenticate(): boolean
-'   - list(): Response
-'   - add(name: String, color: String): Response
-'   - update(id: String, name: String, color: String): Response
-'   - delete(tagId: String): Response
-' }
-
-' class UserBookTag {
-'   - id: String
-'   - userBookId: String
-'   - tagId: String
-'   + getId(): String
-'   + setId(id: String): void
-'   + getUserBookId(): String
-'   + setUserBookId(userBookId: String): void
-'   + getTagId(): String
-'   + setTagId(tagId: String): void
-'   + hashCode(): int
-'   + equals(obj: Object): boolean
-'   + toString(): String
-' }
-
-
-rectangle "Display" {
 
 class SortCriteria {
   - column: int
@@ -319,7 +194,6 @@ class PaginatedLists {
   + executePaginatedQuery(paginatedList: PaginatedList<E>, queryParam: QueryParam): List<Object[]>
   + executePaginatedQuery(paginatedList: PaginatedList<E>, queryParam: QueryParam, sortCriteria: SortCriteria): List<Object[]>
 }
-}
 
 class BookDataService {
 - log: Logger
@@ -339,86 +213,63 @@ class BookDataService {
 + shutDown(): void
 }
 
-' class AppContext {
-'   - instance: AppContext
-'   - eventBus: EventBus
-'   - asyncEventBus: EventBus
-'   - importEventBus: EventBus
-'   - bookDataService: BookDataService
-'   - facebookService: FacebookService
-'   - asyncExecutorList: List<ExecutorService>
-'   + getInstance(): AppContext
-'   - resetEventBus(): void
-'   - newAsyncEventBus(): EventBus
-'   + getEventBus(): EventBus
-'   + getAsyncEventBus(): EventBus
-'   + getImportEventBus(): EventBus
-'   + getBookDataService(): BookDataService
-'   + getFacebookService(): FacebookService
-'   - AppContext()
-' }
+class BookImportedEvent {
+  - user: User
+  - importFile: File
+  + getUser(): User
+  + setUser(user: User): void
+  + getImportFile(): File
+  + setImportFile(importFile: File): void
+  + toString(): String
+}
 
-' class ValidationUtil {
-'   {static} EMAIL_PATTERN: Pattern
-'   {static} HTTP_URL_PATTERN: Pattern
-'   {static} ALPHANUMERIC_PATTERN: Pattern
-'   + validateRequired(s: Object, name: String): void
-'   + validateLength(s: String, name: String, lengthMin: Integer, lengthMax: Integer, nullable: boolean): String
-'   + validateLength(s: String, name: String, lengthMin: Integer, lengthMax: Integer): String
-'   + validateStringNotBlank(s: String, name: String): String
-'   + validateHexColor(s: String, name: String, nullable: boolean): void
-'   + validateEmail(s: String, name: String): void
-'   + validateHttpUrl(s: String, name: String): String
-'   + validateAlphanumeric(s: String, name: String): void
-'   + validateDate(s: String, name: String, nullable: boolean): Date
-'   + validateLocale(localeId: String, name: String, nullable: boolean): String
-'   + validateTheme(themeId: String, name: String, nullable: boolean): String
-' }
+class AppContext {
+  - instance: AppContext
+  - eventBus: EventBus
+  - asyncEventBus: EventBus
+  - importEventBus: EventBus
+  - bookDataService: BookDataService
+  - facebookService: FacebookService
+  - asyncExecutorList: List<ExecutorService>
+  + getInstance(): AppContext
+  - resetEventBus(): void
+  - newAsyncEventBus(): EventBus
+  + getEventBus(): EventBus
+  + getAsyncEventBus(): EventBus
+  + getImportEventBus(): EventBus
+  + getBookDataService(): BookDataService
+  + getFacebookService(): FacebookService
+  - AppContext()
+}
 
 BookResource --|> BaseResource
-' TagResource --|> BaseResource
+TagResource --|> BaseResource
 
-' UserDao "1" o-- "*" User : Aggregation
-' UserDao --> SortCriteria : Dependency
-' UserDao --> PaginatedList : Dependency
-' UserDao --> PaginatedLists : Dependency
-' UserDao "1" o-- "1" UserDto : Aggregation
+BookDao --> Book : <<uses>>
 
-BookDao "1" o-- "*" Book : Aggregation
+UserBookDao --> UserBook : <<uses>>
+UserBookDao --> PaginatedList : <<uses>>
+UserBookDao --> PaginatedLists : <<uses>>
+UserBookDao --> SortCriteria : <<uses>>
+UserBookDao --> UserBookCriteria : <<uses>>
+UserBookDao --> UserBookDto : <<uses>>
 
-' TagDao o-- UserBookTag :  Aggregation
-' TagDao o-- TagDto : Aggregation
-' TagDao o-- Tag : Aggregation
+BookResource --> AppContext : <<uses>>
+BookResource --> Book : <<uses>>
+BookResource --> BookDao : <<uses>>
+BookResource --> UserBook : <<uses>>
+BookResource --> UserBookDao : <<uses>>
+BookResource --> UserBookCriteria : <<uses>>
+BookResource --> SortCriteria : <<uses>>
+BookResource --> PaginatedList : <<uses>>
+BookResource --> UserBookDto : <<uses>>
 
-' TagResource o-- TagDao : Aggregation
-' TagResource o-- Tag : Aggregation
+BookResource --> BookImportedEvent : <<uses>>
+BookDataService --> Book : <<uses>>
 
-UserBookDao o-- UserBook : Aggregation
-UserBookDao --> PaginatedList : Dependency
-UserBookDao --> PaginatedLists : Dependency
-UserBookDao --> SortCriteria : Dependency
-UserBookDao --> UserBookCriteria : Dependency
-UserBookDao o-- UserBookDto : Aggregation
+PaginatedLists --> PaginatedList : <<uses>>
 
-' Check later from lines 394 to 404:
-' BookResource o-- ValidationUtil : Aggregation
-' BookResource --> AppContext : Dependency
-BookResource o-- Book : Aggregation
-BookResource o-- BookDao : Aggregation
-BookResource o-- UserBook : Aggregation
-BookResource o-- UserBookDao : Aggregation
-' BookResource o-- TagDao : Aggregation
-BookResource o-- UserBookCriteria : Aggregation
-BookResource o-- SortCriteria : Aggregation
-BookResource o-- PaginatedList : Aggregation
-BookResource --> UserBookDto : Dependency
-
-BookResource o-- BookImportedEvent : Aggregation
-' BookDataService --> DirectoryUtil : Dependency
-BookDataService o-- Book : Aggregation
-
-' BookResource --> DirectoryUtil : Dependency
-
-PaginatedLists --> PaginatedList : Dependency
+BookImportedEvent "1" o-- "1" User : <<has>>
+AppContext "1" o-- "1" BookDataService : <<has>>
 
 @enduml
