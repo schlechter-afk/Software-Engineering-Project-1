@@ -110,28 +110,9 @@ public class UserBookTag implements Serializable {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
+        if(obj == null || getClass() != obj.getClass()) return false;
         UserBookTag other = (UserBookTag) obj;
-        if (userBookId == null) {
-            if (other.userBookId != null) {
-                return false;
-            }
-        } else if (!userBookId.equals(other.userBookId)) {
-            return false;
-        }
-        if (tagId == null) {
-            if (other.tagId != null) {
-                return false;
-            }
-        } else if (!tagId.equals(other.tagId)) {
-            return false;
-        }
-        return true;
+        return Objects.equal(userBookId, other.userBookId) && Objects.equal(tagId, other.tagId);
     }
 
     @Override

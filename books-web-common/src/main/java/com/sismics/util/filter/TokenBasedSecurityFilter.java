@@ -1,6 +1,5 @@
 package com.sismics.util.filter;
 
-import com.sismics.books.core.constant.Constants;
 import com.sismics.books.core.dao.jpa.AuthenticationTokenDao;
 import com.sismics.books.core.dao.jpa.RoleBaseFunctionDao;
 import com.sismics.books.core.dao.jpa.UserDao;
@@ -36,6 +35,8 @@ public class TokenBasedSecurityFilter implements Filter {
      */
     private static final Logger log = LoggerFactory.getLogger(TokenBasedSecurityFilter.class);
 
+    private static final String DEFAULT_TIMEZONE_ID = "Europe/London";
+
     /**
      * Name of the cookie used to store the authentication token.
      */
@@ -66,56 +67,93 @@ public class TokenBasedSecurityFilter implements Filter {
         // NOP
     }
 
+    /**
+     * Handle an expired token.
+     * 
+     * @param request HTTP request
+     * @param authenticationToken Authentication token
+     */
+    private void handleExpiredToken(HttpServletRequest request, String authToken, AuthenticationTokenDao authenticationTokenDao) {
+        try {
+            injectAnonymousUser(request);
+            // Destroy the expired token
+            authenticationTokenDao.delete(authToken);
+        } catch (Exception e) {
+            if (log.isErrorEnabled()) {
+                log.error(MessageFormat.format("Error deleting authentication token {0} ", authToken), e);
+            }
+        }
+    }
+
+    
+    /**
+     * Get the authentication token from the request.
+     * 
+     * @param request HTTP request
+     * @return Authentication token
+     */
+    private String getAuthToken(HttpServletRequest request) {
+        if (request.getCookies() == null) {
+            return null;
+        }
+        for (Cookie cookie : request.getCookies()) {
+            if (COOKIE_NAME.equals(cookie.getName())) {
+                return cookie.getValue();
+            }
+        }
+        return null;    
+    }
+
+
+    /**
+     * Handle an invalid user.
+     * 
+     * @param request HTTP request
+     * @param authToken Authentication token
+     * @param authenticationTokenDao Authentication token DAO
+     */
+    private void handleInvalidUser(User user, HttpServletRequest request, AuthenticationToken authenticationToken, AuthenticationTokenDao authenticationTokenDao) {
+        if (user != null && user.getDeleteDate() == null) {
+            injectAuthenticatedUser(request, user);      
+            // Update the last connection date
+            authenticationTokenDao.updateLastConnectionDate(authenticationToken.getId());
+        } else {
+            injectAnonymousUser(request);
+        }
+    }
+
+
     @Override
     public void doFilter(ServletRequest req, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
         // Get the value of the client authentication token
         HttpServletRequest request = (HttpServletRequest) req;
-        String authToken = null;
-        if (request.getCookies() != null) {
-            for (Cookie cookie : request.getCookies()) {
-                if (COOKIE_NAME.equals(cookie.getName())) {
-                    authToken = cookie.getValue();
-                }
-            }
+        String authToken = getAuthToken(request);
+        if(authToken == null) {
+            injectAnonymousUser(request);
+            filterChain.doFilter(request, response);
+            return;
         }
-        
+
         // Get the corresponding server token
         AuthenticationTokenDao authenticationTokenDao = new AuthenticationTokenDao();
-        AuthenticationToken authenticationToken = null;
-        if (authToken != null) {
-            authenticationToken = authenticationTokenDao.get(authToken);
-        }
-        
+        AuthenticationToken authenticationToken = authenticationTokenDao.get(authToken);
         if (authenticationToken == null) {
             injectAnonymousUser(request);
-        } else {
-            // Check if the token is still valid
-            if (isTokenExpired(authenticationToken)) {
-                try {
-                    injectAnonymousUser(request);
-
-                    // Destroy the expired token
-                    authenticationTokenDao.delete(authToken);
-                } catch (Exception e) {
-                    if (log.isErrorEnabled()) {
-                        log.error(MessageFormat.format("Error deleting authentication token {0} ", authToken), e);
-                    }
-                }
-            } else {
-                // Check if the user is still valid
-                UserDao userDao = new UserDao();
-                User user = userDao.getById(authenticationToken.getUserId());
-                if (user != null && user.getDeleteDate() == null) {
-                    injectAuthenticatedUser(request, user);
-                    
-                    // Update the last connection date
-                    authenticationTokenDao.updateLastConnectionDate(authenticationToken.getId());
-                } else {
-                    injectAnonymousUser(request);
-                }
-            }
+            filterChain.doFilter(request, response);
+            return;
         }
         
+        if (isTokenExpired(authenticationToken)) {
+            handleExpiredToken(request, authToken, authenticationTokenDao);
+            filterChain.doFilter(request, response);
+            return;
+        } 
+
+        // Check if the user is still valid
+        UserDao userDao = new UserDao();
+        User user = userDao.getById(authenticationToken.getUserId());
+        handleInvalidUser(user, request, authenticationToken, authenticationTokenDao);      
+
         filterChain.doFilter(request, response);
     }
     
@@ -166,7 +204,7 @@ public class TokenBasedSecurityFilter implements Filter {
     private void injectAnonymousUser(HttpServletRequest request) {
         AnonymousPrincipal anonymousPrincipal = new AnonymousPrincipal();
         anonymousPrincipal.setLocale(request.getLocale());
-        anonymousPrincipal.setDateTimeZone(DateTimeZone.forID(Constants.DEFAULT_TIMEZONE_ID));
+        anonymousPrincipal.setDateTimeZone(DateTimeZone.forID(DEFAULT_TIMEZONE_ID));
 
         request.setAttribute(PRINCIPAL_ATTRIBUTE, anonymousPrincipal);
     }

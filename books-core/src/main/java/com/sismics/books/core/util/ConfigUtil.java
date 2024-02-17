@@ -12,6 +12,12 @@ import java.util.ResourceBundle;
  * @author jtremeaux
  */
 public class ConfigUtil {
+
+    private ConfigUtil() {
+        // Empty constructor
+    }
+
+
     /**
      * Returns the textual value of a configuration parameter.
      * 

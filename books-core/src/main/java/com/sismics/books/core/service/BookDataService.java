@@ -36,7 +36,6 @@ import com.sismics.books.core.model.jpa.Book;
 import com.sismics.books.core.util.ConfigUtil;
 import com.sismics.books.core.util.DirectoryUtil;
 import com.sismics.books.core.util.TransactionUtil;
-import com.sismics.books.core.util.mime.MimeType;
 import com.sismics.books.core.util.mime.MimeTypeUtil;
 
 /**
@@ -158,6 +157,53 @@ public class BookDataService extends AbstractIdleService {
         return futureTask.get();
     }
 
+    private URLConnection establishConnection(URL url) throws Exception {
+        URLConnection connection = url.openConnection();
+        connection.setRequestProperty("Accept-Charset", "utf-8");
+        connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.62 Safari/537.36");
+        connection.setConnectTimeout(10000);
+        connection.setReadTimeout(10000);
+        return connection;
+    }
+
+    private JsonNode getRootNode(InputStream inputStream) throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode rootNode = mapper.readValue(inputStream, JsonNode.class);
+        return rootNode;
+    }
+
+    private void setGoogleBookIsbn(Book book, JsonNode volumeInfo) {
+        Iterator<JsonNode> identifiers = volumeInfo.get("industryIdentifiers").getElements();
+        while (identifiers.hasNext()) {
+            JsonNode identifier = identifiers.next();
+            String type = identifier.get("type").getTextValue();
+            String value = identifier.get("identifier").getTextValue();
+            if (type.equals("ISBN_10")) {
+                book.setIsbn10(value);
+            } else if (type.equals("ISBN_13")) {
+                book.setIsbn13(value);
+            }
+        }
+    }
+
+    private Book buildBookFromGoogle(JsonNode volumeInfo, String isbn) throws Exception {
+        Book book = new Book();
+        book.setId(UUID.randomUUID().toString());
+        book.setTitle(volumeInfo.get("title").getTextValue());
+        book.setSubtitle(volumeInfo.has("subtitle") ? volumeInfo.get("subtitle").getTextValue() : null);
+        ArrayNode authors = (ArrayNode) volumeInfo.get("authors");
+        if (authors.size() <= 0) {
+            throw new Exception("Author not found for ISBN: " + isbn);
+        }
+        book.setAuthor(authors.get(0).getTextValue());
+        book.setDescription(volumeInfo.has("description") ? volumeInfo.get("description").getTextValue() : null);
+        setGoogleBookIsbn(book, volumeInfo);
+        book.setLanguage(volumeInfo.get("language").getTextValue());
+        book.setPageCount(volumeInfo.has("pageCount") ? volumeInfo.get("pageCount").getLongValue() : null);
+        book.setPublishDate(formatter.parseDateTime(volumeInfo.get("publishedDate").getTextValue()).toDate());
+        return book;
+    }
+
     /**
      * Search a book by its ISBN using Google Books.
      * 
@@ -168,53 +214,61 @@ public class BookDataService extends AbstractIdleService {
         googleRateLimiter.acquire();
         
         URL url = new URL(String.format(Locale.ENGLISH, GOOGLE_BOOKS_SEARCH_FORMAT, isbn, apiKeyGoogle));
-        URLConnection connection = url.openConnection();
-        connection.setRequestProperty("Accept-Charset", "utf-8");
-        connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.62 Safari/537.36");
-        connection.setConnectTimeout(10000);
-        connection.setReadTimeout(10000);
+        URLConnection connection = establishConnection(url);
         InputStream inputStream = connection.getInputStream();
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode rootNode = mapper.readValue(inputStream, JsonNode.class);
+        JsonNode rootNode = getRootNode(inputStream);
         ArrayNode items = (ArrayNode) rootNode.get("items");
         if (rootNode.get("totalItems").getIntValue() <= 0) {
             throw new Exception("No book found for ISBN: " + isbn);
         }
         JsonNode item = items.get(0);
         JsonNode volumeInfo = item.get("volumeInfo");
-        
-        // Build the book
-        Book book = new Book();
-        book.setId(UUID.randomUUID().toString());
-        book.setTitle(volumeInfo.get("title").getTextValue());
-        book.setSubtitle(volumeInfo.has("subtitle") ? volumeInfo.get("subtitle").getTextValue() : null);
-        ArrayNode authors = (ArrayNode) volumeInfo.get("authors");
-        if (authors.size() <= 0) {
-            throw new Exception("Author not found");
-        }
-        book.setAuthor(authors.get(0).getTextValue());
-        book.setDescription(volumeInfo.has("description") ? volumeInfo.get("description").getTextValue() : null);
-        ArrayNode industryIdentifiers = (ArrayNode) volumeInfo.get("industryIdentifiers");
-        Iterator<JsonNode> iterator = industryIdentifiers.getElements();
-        while (iterator.hasNext()) {
-            JsonNode industryIdentifier = iterator.next();
-            if ("ISBN_10".equals(industryIdentifier.get("type").getTextValue())) {
-                book.setIsbn10(industryIdentifier.get("identifier").getTextValue());
-            } else if ("ISBN_13".equals(industryIdentifier.get("type").getTextValue())) {
-                book.setIsbn13(industryIdentifier.get("identifier").getTextValue());
-            }
-        }
-        book.setLanguage(volumeInfo.get("language").getTextValue());
-        book.setPageCount(volumeInfo.has("pageCount") ? volumeInfo.get("pageCount").getLongValue() : null);
-        book.setPublishDate(formatter.parseDateTime(volumeInfo.get("publishedDate").getTextValue()).toDate());
-        
+        Book book = buildBookFromGoogle(volumeInfo, isbn);
+
         // Download the thumbnail
         JsonNode imageLinks = volumeInfo.get("imageLinks");
         if (imageLinks != null && imageLinks.has("thumbnail")) {
             String imageUrl = imageLinks.get("thumbnail").getTextValue();
             downloadThumbnail(book, imageUrl);
         }
-        
+        return book;
+    }
+
+    private String getOpenLibraryIsbn(JsonNode details, String type) {
+        if (details.has(type) && details.get(type).size() > 0) {
+            String isbnValue = details.get(type).get(0).getTextValue();
+            return isbnValue;
+        }
+        return null;
+    }
+
+    private Book buildBookFromOpenLibrary(JsonNode bookNode, String isbn) throws Exception {
+        JsonNode details = bookNode.get("details");
+        JsonNode data = bookNode.get("data");
+        Book book = new Book();
+        String authorName = data.get("authors").get(0).get("name").getTextValue();
+        String isbn10 = getOpenLibraryIsbn(details, "isbn_10");
+        String isbn13 = getOpenLibraryIsbn(details, "isbn_13");
+        book.setId(UUID.randomUUID().toString());
+        book.setTitle(details.get("title").getTextValue());
+        book.setSubtitle(details.has("subtitle") ? details.get("subtitle").getTextValue() : null);
+        if (!data.has("authors") || data.get("authors").size() == 0) {
+            throw new Exception("Book without author for ISBN: " + isbn);
+        }
+        book.setAuthor(authorName);
+        book.setDescription(details.has("first_sentence") ? details.get("first_sentence").get("value").getTextValue() : null);
+        book.setIsbn10(isbn10);
+        book.setIsbn13(isbn13);
+        if (details.has("languages") && details.get("languages").size() > 0) {
+            String language = details.get("languages").get(0).get("key").getTextValue();
+            LanguageCode languageCode = LanguageCode.getByCode(language.split("/")[2]);
+            book.setLanguage(languageCode.name());
+        }
+        book.setPageCount(details.has("number_of_pages") ? details.get("number_of_pages").getLongValue() : null);
+        if (!details.has("publish_date")) {
+            throw new Exception("Book without publication date for ISBN: " + isbn);
+        }
+        book.setPublishDate(details.has("publish_date") ? formatter.parseDateTime(details.get("publish_date").getTextValue()).toDate() : null);
         return book;
     }
 
@@ -228,51 +282,22 @@ public class BookDataService extends AbstractIdleService {
         openLibraryRateLimiter.acquire();
         
         URL url = new URL(String.format(Locale.ENGLISH, OPEN_LIBRARY_FORMAT, isbn));
-        URLConnection connection = url.openConnection();
-        connection.setRequestProperty("Accept-Charset", "utf-8");
-        connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.62 Safari/537.36");
-        connection.setConnectTimeout(10000);
-        connection.setReadTimeout(10000);
+        URLConnection connection = establishConnection(url);
         InputStream inputStream = connection.getInputStream();
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode rootNode = mapper.readValue(inputStream, JsonNode.class);
+        JsonNode rootNode = getRootNode(inputStream);
         if (rootNode instanceof ArrayNode) {
             throw new Exception("No book found for ISBN: " + isbn);
         }
-        
         JsonNode bookNode = rootNode.get("records").getElements().next();
         JsonNode details = bookNode.get("details").get("details");
         JsonNode data = bookNode.get("data");
-        
-        // Build the book
-        Book book = new Book();
-        book.setId(UUID.randomUUID().toString());
-        book.setTitle(details.get("title").getTextValue());
-        book.setSubtitle(details.has("subtitle") ? details.get("subtitle").getTextValue() : null);
-        if (!data.has("authors") || data.get("authors").size() == 0) {
-            throw new Exception("Book without author for ISBN: " + isbn);
-        }
-        book.setAuthor(data.get("authors").get(0).get("name").getTextValue());
-        book.setDescription(details.has("first_sentence") ? details.get("first_sentence").get("value").getTextValue() : null);
-        book.setIsbn10(details.has("isbn_10") && details.get("isbn_10").size() > 0 ? details.get("isbn_10").get(0).getTextValue() : null);
-        book.setIsbn13(details.has("isbn_13") && details.get("isbn_13").size() > 0 ? details.get("isbn_13").get(0).getTextValue() : null);
-        if (details.has("languages") && details.get("languages").size() > 0) {
-            String language = details.get("languages").get(0).get("key").getTextValue();
-            LanguageCode languageCode = LanguageCode.getByCode(language.split("/")[2]);
-            book.setLanguage(languageCode.name());
-        }
-        book.setPageCount(details.has("number_of_pages") ? details.get("number_of_pages").getLongValue() : null);
-        if (!details.has("publish_date")) {
-            throw new Exception("Book without publication date for ISBN: " + isbn);
-        }
-        book.setPublishDate(details.has("publish_date") ? formatter.parseDateTime(details.get("publish_date").getTextValue()).toDate() : null);
-        
+        Book book = buildBookFromOpenLibrary(bookNode, isbn);
+
         // Download the thumbnail
         if (details.has("covers") && details.get("covers").size() > 0) {
             String imageUrl = "http://covers.openlibrary.org/b/id/" + details.get("covers").get(0).getLongValue() + "-M.jpg";
             downloadThumbnail(book, imageUrl);
         }
-        
         return book;
     }
     
@@ -289,14 +314,12 @@ public class BookDataService extends AbstractIdleService {
         imageConnection.setConnectTimeout(10000);
         imageConnection.setReadTimeout(10000);
         try (InputStream inputStream = new BufferedInputStream(imageConnection.getInputStream())) {
-            if (MimeTypeUtil.guessMimeType(inputStream) != MimeType.IMAGE_JPEG) {
+            if (MimeTypeUtil.guessMimeType(inputStream) != MimeTypeUtil.IMAGE_JPEG) {
                 throw new Exception("Only JPEG images are supported as thumbnails");
             }
             
             Path imagePath = Paths.get(DirectoryUtil.getBookDirectory().getPath(), book.getId());
             Files.copy(inputStream, imagePath, StandardCopyOption.REPLACE_EXISTING);
-            
-            // TODO Rescale to 192px width max if necessary
         }
     }
     
