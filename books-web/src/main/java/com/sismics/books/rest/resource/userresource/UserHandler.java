@@ -1,4 +1,4 @@
-package com.sismics.books.rest.resource.user_resource;
+package com.sismics.books.rest.resource.userresource;
 
 import java.util.ArrayList;
 import java.util.Date;

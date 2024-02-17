@@ -1,4 +1,4 @@
-package com.sismics.books.rest.resource.user_resource;
+package com.sismics.books.rest.resource.userresource;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -42,22 +42,21 @@ import com.sismics.rest.util.ValidationUtil;
 import com.sismics.security.UserPrincipal;
 import com.sismics.util.filter.TokenBasedSecurityFilter;
 
-@Path("/user/session")
-public class UserSession extends BaseResource {
+@Path("/user/logout")
+public class UserLogout extends BaseResource {
 
     /**
-     * Returns all active sessions.
+     * Logs out the user and deletes the active session.
      * 
      * @return Response
-     * @throws JSONException
      */
-    @GET
+    @POST
     @Produces(MediaType.APPLICATION_JSON)
-    public Response session() throws JSONException {
+    public Response logout() throws JSONException {
         if (!authenticate()) {
             throw new ForbiddenClientException();
         }
-        
+
         // Get the value of the session token
         String authToken = null;
         if (request.getCookies() != null) {
@@ -68,55 +67,27 @@ public class UserSession extends BaseResource {
             }
         }
         
-        JSONObject response = new JSONObject();
-        List<JSONObject> sessions = new ArrayList<>();
-        
         AuthenticationTokenDao authenticationTokenDao = new AuthenticationTokenDao();
-
-        for (AuthenticationToken authenticationToken : authenticationTokenDao.getByUserId(principal.getId())) {
-            JSONObject session = new JSONObject();
-            session.put("create_date", authenticationToken.getCreationDate().getTime());
-            if (authenticationToken.getLastConnectionDate() != null) {
-                session.put("last_connection_date", authenticationToken.getLastConnectionDate().getTime());
-            }
-            session.put("current", authenticationToken.getId().equals(authToken));
-            sessions.add(session);
+        AuthenticationToken authenticationToken = null;
+        if (authToken != null) {
+            authenticationToken = authenticationTokenDao.get(authToken);
         }
-        response.put("sessions", sessions);
         
-        return Response.ok().entity(response).build();
-    }
-    
-    /**
-     * Deletes all active sessions except the one used for this request.
-     * 
-     * @return Response
-     * @throws JSONException
-     */
-    @DELETE
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteSession() throws JSONException {
-        if (!authenticate()) {
+        // No token : nothing to do
+        if (authenticationToken == null) {
             throw new ForbiddenClientException();
         }
         
-        // Get the value of the session token
-        String authToken = null;
-        if (request.getCookies() != null) {
-            for (Cookie cookie : request.getCookies()) {
-                if (TokenBasedSecurityFilter.COOKIE_NAME.equals(cookie.getName())) {
-                    authToken = cookie.getValue();
-                }
-            }
+        // Deletes the server token
+        try {
+            authenticationTokenDao.delete(authToken);
+        } catch (Exception e) {
+            throw new ServerException("AuthenticationTokenError", "Error deleting authentication token: " + authToken, e);
         }
         
-        // Remove other tokens
-        AuthenticationTokenDao authenticationTokenDao = new AuthenticationTokenDao();
-        authenticationTokenDao.deleteByUserId(principal.getId(), authToken);
-        
-        // Always return ok
+        // Deletes the client token in the HTTP response
         JSONObject response = new JSONObject();
-        response.put("status", "ok");
-        return Response.ok().entity(response).build();
+        NewCookie cookie = new NewCookie(TokenBasedSecurityFilter.COOKIE_NAME, null);
+        return Response.ok().entity(response).cookie(cookie).build();
     }
 }
