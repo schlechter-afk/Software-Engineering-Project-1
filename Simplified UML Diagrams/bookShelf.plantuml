@@ -1,0 +1,186 @@
+@startuml BookShelfManagement
+
+abstract class BaseResource {
+    - request: HttpServletRequest
+    - appKey: String
+    # principal: IPrincipal
+    + authenticate(): boolean
+    + checkBaseFunction(baseFunction: BaseFunction): void
+    + hasBaseFunction(baseFunction: BaseFunction): boolean
+}
+
+class Book {
+  - id: String
+  - title: String
+  - subtitle: String
+  - author: String
+  - description: String
+  - isbn10: String
+  - isbn13: String
+  - pageCount: Long
+  - language: String
+  - publishDate: Date
+  + getId(): String
+  + getTitle(): String
+  + getSubtitle(): String
+  + getAuthor(): String
+  + getDescription(): String
+  + getIsbn10(): String
+  + getIsbn13(): String
+  + getPageCount(): Long
+  + getLanguage(): String
+  + getPublishDate(): Date
+  + setId(id: String): void
+  + setTitle(title: String): void
+  + setSubtitle(subtitle: String): void
+  + setAuthor(author: String): void
+  + setDescription(description: String): void
+  + setIsbn10(isbn10: String): void
+  + setIsbn13(isbn13: String): void
+  + setPageCount(pageCount: Long): void
+  + setLanguage(language: String): void
+  + setPublishDate(publishDate: Date): void
+  + toString(): String
+}
+
+class Tag {
+  - id: String
+  - name: String
+  - userId: String
+  - createDate: Date
+  - deleteDate: Date
+  - color: String
+  + getId(): String
+  + setId(id: String): void
+  + getUserId(): String
+  + setUserId(userId: String): void
+  + getName(): String
+  + setName(name: String): void
+  + getCreateDate(): Date
+  + setCreateDate(createDate: Date): void
+  + getDeleteDate(): Date
+  + setDeleteDate(deleteDate: Date): void
+  + getColor(): String
+  + setColor(color: String): void
+  + toString(): String
+}
+
+class TagDto {
+  - id: String
+  - name: String
+  - color: String
+
+  + getId(): String
+  + setId(id: String): void
+  + getName(): String
+  + setName(name: String): void
+  + getColor(): String
+  + setColor(color: String): void
+}
+
+class TagDao {
+  + getById(id: String): Tag
+  + getByUserId(userId: String): List<Tag>
+  + updateTagList(userBookId: String, tagIdSet: Set<String>): void
+  + getByUserBookId(userBookId: String): List<TagDto>
+  + create(tag: Tag): String
+  + getByName(userId: String, name: String): Tag
+  + getByTagId(userId: String, tagId: String): Tag
+  + delete(tagId: String): void
+  + findByName(userId: String, name: String): List<Tag>
+}
+
+class TagResource {
+    - principal: Principal
+    - authenticate(): boolean
+    - list(): Response
+    - add(name: String, color: String): Response
+    - update(id: String, name: String, color: String): Response
+    - delete(tagId: String): Response
+}
+
+class UserBook {
+    - id: String
+    - bookId: String
+    - userId: String
+    - createDate: Date
+    - deleteDate: Date
+    - readDate: Date
+
+    + getId(): String
+    + setId(id: String): void
+    + getBookId(): String
+    + setBookId(bookId: String): void
+    + getUserId(): String
+    + setUserId(userId: String): void
+    + getCreateDate(): Date
+    + setCreateDate(createDate: Date): void
+    + getDeleteDate(): Date
+    + setDeleteDate(deleteDate: Date): void
+    + getReadDate(): Date
+    + setReadDate(readDate: Date): void
+}
+
+class UserBookDao {
+  +create(userBook: UserBook): String
+  +delete(id: String): void
+  +getUserBook(userBookId: String, userId: String): UserBook
+  +getUserBook(userBookId: String): UserBook
+  +getByBook(bookId: String, userId: String): UserBook
+  +findByCriteria(paginatedList: PaginatedList<UserBookDto>, criteria: UserBookCriteria, sortCriteria: SortCriteria): void
+}
+
+class BookDao {
+  + create(book: Book): String
+  + getById(id: String): Book
+  + getByIsbn(isbn: String): Book
+}
+
+class ValidationUtil {
+  {static} EMAIL_PATTERN: Pattern
+  {static} HTTP_URL_PATTERN: Pattern
+  {static} ALPHANUMERIC_PATTERN: Pattern
+  + validateRequired(s: Object, name: String): void
+  + validateLength(s: String, name: String, lengthMin: Integer, lengthMax: Integer, nullable: boolean): String
+  + validateLength(s: String, name: String, lengthMin: Integer, lengthMax: Integer): String
+  + validateStringNotBlank(s: String, name: String): String
+  + validateHexColor(s: String, name: String, nullable: boolean): void
+  + validateEmail(s: String, name: String): void
+  + validateHttpUrl(s: String, name: String): String
+  + validateAlphanumeric(s: String, name: String): void
+  + validateDate(s: String, name: String, nullable: boolean): Date
+  + validateLocale(localeId: String, name: String, nullable: boolean): String
+  + validateTheme(themeId: String, name: String, nullable: boolean): String
+}
+
+class UserBookTag {
+  - id: String
+  - userBookId: String
+  - tagId: String
+  + getId(): String
+  + setId(id: String): void
+  + getUserBookId(): String
+  + setUserBookId(userBookId: String): void
+  + getTagId(): String
+  + setTagId(tagId: String): void
+  + hashCode(): int
+  + equals(obj: Object): boolean
+  + toString(): String
+}
+
+TagResource --|> BaseResource
+
+BookDao "1" o-- "*" Book : Aggregation
+
+TagDao o-- UserBookTag :  Aggregation
+TagDao o-- TagDto : Aggregation
+TagDao o-- Tag : Aggregation
+
+TagResource o-- TagDao : Aggregation
+TagResource o-- Tag : Aggregation
+TagResource o-- ValidationUtil : Aggregation
+
+UserBookDao o-- UserBook : Aggregation
+
+
+@enduml
