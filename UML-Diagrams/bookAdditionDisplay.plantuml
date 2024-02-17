@@ -17,9 +17,17 @@ class BaseFunction {
 }
 
 class BookResource {
-  +list(context: Context, responseHandler: JsonHttpResponseHandler): void
-  +info(context: Context, id: String, responseHandler: JsonHttpResponseHandler): void
-  +add(context: Context, isbn: String, responseHandler: JsonHttpResponseHandler): void
+    - principal: Principal
+    + add(isbn: String): Response
+    + delete(userBookId: String): Response
+    + add(title: String, subtitle: String, author: String, description: String, isbn10: String, isbn13: String, pageCount: Long, language: String, publishDateStr: String, tagList: List<String>): Response
+    + update(userBookId: String, title: String, subtitle: String, author: String, description: String, isbn10: String, isbn13: String, pageCount: Long, language: String, publishDateStr: String, tagList: List<String>): Response
+    + get(userBookId: String): Response
+    + cover(userBookId: String): Response
+    + updateCover(userBookId: String, imageUrl: String): Response
+    + list(limit: Integer, offset: Integer, sortColumn: Integer, asc: Boolean, search: String, read: Boolean, tagName: String): Response
+    + importFile(fileBodyPart: FormDataBodyPart): Response
+    + read(userBookId: String, read: boolean): Response
 }
 
 class UserDto {
@@ -368,47 +376,46 @@ class ValidationUtil {
 BookResource --|> BaseResource
 TagResource --|> BaseResource
 
-UserDao "1" o-- "*" User : Aggregation
-UserDao --> SortCriteria : Dependency
-UserDao --> PaginatedList : Dependency
-UserDao --> PaginatedLists : Dependency
-UserDao "1" o-- "1" UserDto : Aggregation
+UserDao --> User : <<uses>>
+UserDao --> SortCriteria : <<uses>>
+UserDao --> PaginatedList : <<uses>>
+UserDao --> PaginatedLists : <<uses>>
+UserDao --> UserDto : <<uses>>
 
-BookDao "1" o-- "*" Book : Aggregation
+BookDao --> Book : <<uses>>
 
-TagDao o-- UserBookTag :  Aggregation
-TagDao o-- TagDto : Aggregation
-TagDao o-- Tag : Aggregation
+TagDao --> UserBookTag :  <<uses>>
+TagDao --> TagDto : <<uses>>
+TagDao --> Tag : <<uses>>
 
-TagResource o-- TagDao : Aggregation
-TagResource o-- Tag : Aggregation
+UserBookDao --> UserBook : <<uses>>
+UserBookDao --> PaginatedList : <<uses>>
+UserBookDao --> PaginatedLists : <<uses>>
+UserBookDao --> SortCriteria : <<uses>>
+UserBookDao --> UserBookCriteria : <<uses>>
+UserBookDao --> UserBookDto : <<uses>>
 
-UserBookDao o-- UserBook : Aggregation
-UserBookDao --> PaginatedList : Dependency
-UserBookDao --> PaginatedLists : Dependency
-UserBookDao --> SortCriteria : Dependency
-UserBookDao --> UserBookCriteria : Dependency
-UserBookDao o-- UserBookDto : Aggregation
+BookResource --> ValidationUtil : <<uses>>
+BookResource --> AppContext : <<uses>>
+BookResource --> Book : <<uses>>
+BookResource --> BookDao : <<uses>>
+BookResource --> UserBook : <<uses>>
+BookResource --> UserBookDao : <<uses>>
+BookResource --> TagDao : <<uses>>
+BookResource --> UserBookCriteria : <<uses>>
+BookResource --> SortCriteria : <<uses>>
+BookResource --> PaginatedList : <<uses>>
+BookResource --> UserBookDto : <<uses>>
 
-' Check later from lines 394 to 404:
-BookResource o-- ValidationUtil : Aggregation
-BookResource --> AppContext : Dependency
-BookResource o-- Book : Aggregation
-BookResource o-- BookDao : Aggregation
-BookResource o-- UserBook : Aggregation
-BookResource o-- UserBookDao : Aggregation
-BookResource o-- TagDao : Aggregation
-BookResource o-- UserBookCriteria : Aggregation
-BookResource o-- SortCriteria : Aggregation
-BookResource o-- PaginatedList : Aggregation
-BookResource --> UserBookDto : Dependency
+BookResource --> BookImportedEvent : <<uses>>
+BookDataService --> DirectoryUtil : <<uses>>
+BookDataService --> Book : <<uses>>
 
-BookResource o-- BookImportedEvent : Aggregation
-BookDataService --> DirectoryUtil : Dependency
-BookDataService o-- Book : Aggregation
+BookResource --> DirectoryUtil : <<uses>>
 
-BookResource --> DirectoryUtil : Dependency
+PaginatedLists --> PaginatedLists : <<uses>>
 
-PaginatedLists --> PaginatedLists
+BookImportedEvent "1" o-- "1" User : <<has>>
+AppContext "1" o-- "1" BookDataService : <<has>>
 
 @enduml

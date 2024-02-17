@@ -208,48 +208,33 @@ class Constants {
 }
 
 
-UserDao "1" o-- "*" User : Aggregation
-UserDao --> SortCriteria : Dependency
-UserDao --> PaginatedList : Dependency
-UserDao --> PaginatedLists : Dependency
-UserDao "1" o-- "1" UserDto : Aggregation
-UserDao --> Constants
+UserDao --> User : <<uses>>
+UserDao --> SortCriteria : <<uses>>
+UserDao --> PaginatedList : <<uses>>
+UserDao --> PaginatedLists : <<uses>>
+UserDao --> UserDto : <<uses>>
+UserDao --> Constants : <<uses>>
 
 UserResource --|> BaseResource
-UserResource --> ValidationUtil
-UserResource o-- UserDao : Aggregation
-UserResource "1" --> "1" AuthenticationToken : uses >
-UserResource "1" --> "1" AuthenticationTokenDao : uses >
-UserResource --> BaseFunction
-UserResource o-- RoleBaseFunctionDao : Aggregation
-UserResource --> TokenBasedSecurityFilter
-UserResource --> PaginatedList
-UserResource --> PaginatedLists
-UserResource --> Constants
-UserResource "1" o-- "1" SortCriteria : uses >
+UserResource --> ValidationUtil : <<uses>>
+UserResource "1" o-- "1" UserDao : <<contains>>
+UserResource --> AuthenticationToken : <<uses>>
+UserResource --> AuthenticationTokenDao : <<uses>>
+UserResource --> BaseFunction : <<uses>>
+UserResource --> RoleBaseFunctionDao : <<uses>>
+UserResource --> TokenBasedSecurityFilter : <<uses>>
+UserResource --> PaginatedList : <<uses>>
+UserResource --> PaginatedLists : <<uses>>
+UserResource --> Constants : <<uses>>
+UserResource --> SortCriteria : <<uses>>
 
-AuthenticationTokenDao --> ThreadLocalContext
-AuthenticationTokenDao "1" --> "*" AuthenticationToken : manages >
+AuthenticationTokenDao --> ThreadLocalContext : <<uses>>
+AuthenticationTokenDao --> AuthenticationToken : <<manages>>
 
-RoleBaseFunctionDao --> ThreadLocalContext
+RoleBaseFunctionDao --> ThreadLocalContext : <<uses>>
 
-TokenBasedSecurityFilter --> Constants
+TokenBasedSecurityFilter --> Constants : <<uses>>
 
-PaginatedLists --> PaginatedList
-
-' ' Inheritance
-' BaseResource <|-- UserResource
-
-' ' Associations
-' AuthenticationToken "1" --> "1" User : belongs to >
-' UserDao ..> ThreadLocalContext : uses >
-' UserDao ..> ValidationUtil : uses >
-' UserResource ..> ValidationUtil : uses >
-' TokenBasedSecurityFilter "1" --> "1" AuthenticationTokenDao : uses >
-
-' ' Aggregations and Compositions
-' UserResource "1" o-- "1" TokenBasedSecurityFilter : contains >
-' PaginatedLists "1" o-- "*" PaginatedList : creates >
-' UserResource "1" o-- "1" SortCriteria : uses >
+PaginatedLists --> PaginatedList : <<uses>>
 
 @enduml
