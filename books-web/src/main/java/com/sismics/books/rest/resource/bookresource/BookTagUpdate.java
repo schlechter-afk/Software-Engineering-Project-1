@@ -44,6 +44,11 @@ import com.sismics.books.rest.resource.BaseResource;
 
 @Path("/book/{id: [a-z0-9\\-]+}")
 public class BookTagUpdate extends BaseResource{
+
+    public static final String BOOKNOTFOUND = "BookNotFound";
+    public static final String BOOKNOTFOUNDMESSAGE = "Book not found with id";
+    public static final String STATUS = "status";
+
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     public Response delete(
@@ -56,7 +61,7 @@ public class BookTagUpdate extends BaseResource{
         UserBookDao userBookDao = new UserBookDao();
         UserBook userBook = userBookDao.getUserBook(userBookId, principal.getId());
         if (userBook == null) {
-            throw new ClientException("BookNotFound", "Book not found with id " + userBookId);
+            throw new ClientException(BOOKNOTFOUND, BOOKNOTFOUNDMESSAGE + userBookId);
         }
         
         // Delete the user book
@@ -64,7 +69,7 @@ public class BookTagUpdate extends BaseResource{
         
         // Always return ok
         JSONObject response = new JSONObject();
-        response.put("status", "ok");
+        response.put(STATUS, "ok");
         return Response.ok().entity(response).build();
     }
 
@@ -104,7 +109,7 @@ public class BookTagUpdate extends BaseResource{
       BookDao bookDao = new BookDao();
       UserBook userBook = userBookDao.getUserBook(userBookId, principal.getId());
       if (userBook == null) {
-          throw new ClientException("BookNotFound", "Book not found with id " + userBookId);
+          throw new ClientException(BOOKNOTFOUND, BOOKNOTFOUNDMESSAGE + userBookId);
       }
       
       // Get the book
@@ -190,7 +195,7 @@ public class BookTagUpdate extends BaseResource{
         UserBookDao userBookDao = new UserBookDao();
         UserBook userBook = userBookDao.getUserBook(userBookId, principal.getId());
         if (userBook == null) {
-            throw new ClientException("BookNotFound", "Book not found with id " + userBookId);
+            throw new ClientException(BOOKNOTFOUND, BOOKNOTFOUNDMESSAGE + userBookId);
         }
         
         // Fetch the book
@@ -269,7 +274,7 @@ public class BookTagUpdate extends BaseResource{
         UserBookDao userBookDao = new UserBookDao();
         UserBook userBook = userBookDao.getUserBook(userBookId, principal.getId());
         if (userBook == null) {
-            throw new ClientException("BookNotFound", "Book not found with id " + userBookId);
+            throw new ClientException(BOOKNOTFOUND, BOOKNOTFOUNDMESSAGE + userBookId);
         }
         
         // Get the book
@@ -285,7 +290,7 @@ public class BookTagUpdate extends BaseResource{
         
         // Always return ok
         JSONObject response = new JSONObject();
-        response.put("status", "ok");
+        response.put(STATUS, "ok");
         return Response.ok(response).build();
     }
 

@@ -32,17 +32,17 @@ import com.sismics.books.rest.resource.BaseResource;
 @Path("/book/manual")
 public class ManualBookAddition extends BaseResource {
     public static class BookParams {
-        public String title;
-        public String subtitle;
-        public String author;
-        public String description;
-        public String isbn10;
-        public String isbn13;
-        public Long pageCount;
-        public String language;
-        public String publishDateStr;
-        public Date publishDate;
-        public List<String> tagList;
+        private String title;
+        private String subtitle;
+        private String author;
+        private String description;
+        private String isbn10;
+        private String isbn13;
+        private Long pageCount;
+        private String language;
+        private String publishDateStr;
+        private Date publishDate;
+        private List<String> tagList;
     }
 
     /**

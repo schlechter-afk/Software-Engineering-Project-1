@@ -133,6 +133,8 @@ public class BookDataService extends AbstractIdleService {
             throw new Exception("ISBN must be 10 or 13 characters long");
         }
 
+        
+
         Callable<Book> callable = new Callable<Book>() {
             
             @Override

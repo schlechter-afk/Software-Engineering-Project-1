@@ -58,9 +58,6 @@ public class FacebookService extends AbstractScheduledService {
         facebookAppSecret = configBundle.getString("app_key.facebook.secret");
     }
 
-    @Override
-    protected void shutDown() throws Exception {
-    }
 
     @Override
     protected void runOneIteration() throws Exception {
@@ -236,33 +233,5 @@ public class FacebookService extends AbstractScheduledService {
         userApp.setUsername(user.getUsername());
     }
 
-    /**
-     * Publish a book on Facebook.
-     * 
-     * @param userBook User book to publish
-     */
-    public void publishAction(final UserBook userBook) {
-//        FacebookClient facebookClient = new DefaultFacebookClient();
 
-        // TODO Publish a user book
-//        final String trackUrl = UrlUtil.getTrackUrl(track.getId());
-//        String activityId = track.getActivity().getId();
-//        String connection = "me/fitness.runs";
-//        if (ActivityId.RUNNING.name().equals(activityId)) {
-//            connection = "me/fitness.runs";
-//        } else if (ActivityId.CYCLING.name().equals(activityId)) {
-//            connection = "me/fitness.bikes";
-//        } else if (ActivityId.WALKING.name().equals(activityId) || ActivityId.HIKING.name().equals(activityId)) {
-//            connection = "me/fitness.walks";
-//        } 
-//        try {
-//            FacebookType publishResponse = facebookClient.publish(connection, FacebookType.class, Parameter.with("course", trackUrl));
-//
-//            if (log.isInfoEnabled()) {
-//                log.info(MessageFormat.format("Published Facebook action: {0} for user {1}, item id = {2}", connection, user.getUsername(), publishResponse.getId()));
-//            }
-//        } catch (FacebookException e) {
-//            log.error("Error publishing Facebook action", e);
-//        }
-    }
 }

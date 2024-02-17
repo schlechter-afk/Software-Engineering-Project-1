@@ -31,6 +31,11 @@ import com.sismics.books.rest.resource.BaseResource;
 @Path("/user")
 public class UserHandler extends BaseResource {
 
+    public static final String USERNAME_STRING = "username";
+    public static final String EMAIL_STRING = "email";
+    public static final String PASSWORD_STRING = "password";
+    public static final String STATUS = "status";
+
     /**
      * Creates a new user.
      * 
@@ -56,17 +61,13 @@ public class UserHandler extends BaseResource {
             throw new ForbiddenClientException();
         }
         checkBaseFunction(BaseFunction.ADMIN);
-
-        String userNameStr = "username";
-        String emailStr = "email";
-        String passwordStr = "password";
         
         // Validate the input data
-        username = ValidationUtil.validateLength(username, userNameStr, 3, 50);
-        ValidationUtil.validateAlphanumeric(username, userNameStr);
-        password = ValidationUtil.validateLength(password, passwordStr, 8, 50);
-        email = ValidationUtil.validateLength(email, emailStr, 3, 50);
-        ValidationUtil.validateEmail(email, emailStr);
+        username = ValidationUtil.validateLength(username, USERNAME_STRING, 3, 50);
+        ValidationUtil.validateAlphanumeric(username, USERNAME_STRING);
+        password = ValidationUtil.validateLength(password, PASSWORD_STRING, 8, 50);
+        email = ValidationUtil.validateLength(email, EMAIL_STRING, 3, 50);
+        ValidationUtil.validateEmail(email, EMAIL_STRING);
         
         // Create the user
         User user = new User();
@@ -91,7 +92,7 @@ public class UserHandler extends BaseResource {
         
         // Always return OK
         JSONObject response = new JSONObject();
-        response.put("status", "ok");
+        response.put(STATUS, "ok");
         return Response.ok().entity(response).build();
     }
 
@@ -120,8 +121,8 @@ public class UserHandler extends BaseResource {
         }
         
         // Validate the input data
-        password = ValidationUtil.validateLength(password, "password", 8, 50, true);
-        email = ValidationUtil.validateLength(email, "email", null, 100, true);
+        password = ValidationUtil.validateLength(password, PASSWORD_STRING, 8, 50, true);
+        email = ValidationUtil.validateLength(email, EMAIL_STRING, null, 100, true);
         localeId = ValidationUtil.validateLocale(localeId, "locale", true);
         themeId = ValidationUtil.validateTheme(themeId, "theme", true);
         
@@ -150,7 +151,7 @@ public class UserHandler extends BaseResource {
         
         // Always return "ok"
         JSONObject response = new JSONObject();
-        response.put("status", "ok");
+        response.put(STATUS, "ok");
         return Response.ok().entity(response).build();
     }
 
@@ -177,7 +178,7 @@ public class UserHandler extends BaseResource {
         
         // Always return ok
         JSONObject response = new JSONObject();
-        response.put("status", "ok");
+        response.put(STATUS, "ok");
         return Response.ok().entity(response).build();
     }
     
@@ -204,8 +205,8 @@ public class UserHandler extends BaseResource {
             response.put("anonymous", false);
             UserDao userDao = new UserDao();
             User user = userDao.getById(principal.getId());
-            response.put("username", user.getUsername());
-            response.put("email", user.getEmail());
+            response.put(USERNAME_STRING, user.getUsername());
+            response.put(EMAIL_STRING, user.getEmail());
             response.put("theme", user.getTheme());
             response.put("locale", user.getLocaleId());
             response.put("first_connection", user.isFirstConnection());

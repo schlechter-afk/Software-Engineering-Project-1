@@ -22,8 +22,6 @@ import com.sismics.rest.exception.ClientException;
 import com.sismics.rest.exception.ForbiddenClientException;
 import com.sismics.rest.util.ValidationUtil;
 
-import com.sismics.books.rest.resource.BaseResource;
-
 @Path("/book")
 public class AddBook extends BaseResource{
   @PUT

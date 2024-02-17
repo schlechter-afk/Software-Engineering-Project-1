@@ -29,8 +29,6 @@ import com.sismics.books.rest.resource.BaseResource;
 import com.sismics.rest.exception.ForbiddenClientException;
 import com.sismics.rest.exception.ServerException;
 
-import com.sismics.books.rest.resource.BaseResource;
-
 @Path("/book/list")
 public class ListBooks extends BaseResource{
     @GET
