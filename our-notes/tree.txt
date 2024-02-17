@@ -1,0 +1,422 @@
+.
+├── books-android
+│   ├── app
+│   │   ├── app.iml
+│   │   ├── build.gradle
+│   │   ├── libs
+│   │   │   └── android-query.0.26.7.jar
+│   │   ├── proguard-rules.txt
+│   │   └── src
+│   │       └── main
+│   │           ├── AndroidManifest.xml
+│   │           ├── ic_launcher-web.png
+│   │           ├── java
+│   │           │   └── com
+│   │           │       └── sismics
+│   │           │           └── books
+│   │           │               ├── activity
+│   │           │               │   ├── BookDetailActivity.java
+│   │           │               │   ├── BookListActivity.java
+│   │           │               │   └── LoginActivity.java
+│   │           │               ├── adapter
+│   │           │               │   └── BooksAdapter.java
+│   │           │               ├── fragment
+│   │           │               │   ├── BookDetailFragment.java
+│   │           │               │   └── BookListFragment.java
+│   │           │               ├── listener
+│   │           │               │   └── CallbackListener.java
+│   │           │               ├── MainApplication.java
+│   │           │               ├── model
+│   │           │               │   └── ApplicationContext.java
+│   │           │               ├── resource
+│   │           │               │   ├── BaseResource.java
+│   │           │               │   ├── BookResource.java
+│   │           │               │   └── UserResource.java
+│   │           │               ├── util
+│   │           │               │   ├── ApplicationUtil.java
+│   │           │               │   ├── DialogUtil.java
+│   │           │               │   ├── form
+│   │           │               │   │   ├── Validable.java
+│   │           │               │   │   ├── validator
+│   │           │               │   │   │   ├── Alphanumeric.java
+│   │           │               │   │   │   ├── Email.java
+│   │           │               │   │   │   ├── Length.java
+│   │           │               │   │   │   ├── Required.java
+│   │           │               │   │   │   └── ValidatorType.java
+│   │           │               │   │   └── Validator.java
+│   │           │               │   └── PreferenceUtil.java
+│   │           │               └── zxing
+│   │           │                   ├── IntentIntegrator.java
+│   │           │                   └── IntentResult.java
+│   │           └── res
+│   │               ├── drawable-hdpi
+│   │               │   ├── card_bg.9.png
+│   │               │   └── ic_action_new.png
+│   │               ├── drawable-xhdpi
+│   │               │   └── ic_action_new.png
+│   │               ├── drawable-xxhdpi
+│   │               │   └── ic_action_new.png
+│   │               ├── layout
+│   │               │   ├── activity_book_detail.xml
+│   │               │   ├── activity_book_list.xml
+│   │               │   ├── activity_book_twopane.xml
+│   │               │   ├── activity_login.xml
+│   │               │   ├── fragment_book_detail.xml
+│   │               │   └── list_item_book.xml
+│   │               ├── menu
+│   │               │   ├── book_list.xml
+│   │               │   └── main.xml
+│   │               ├── mipmap-hdpi
+│   │               │   └── ic_launcher.png
+│   │               ├── mipmap-mdpi
+│   │               │   └── ic_launcher.png
+│   │               ├── mipmap-xhdpi
+│   │               │   └── ic_launcher.png
+│   │               ├── mipmap-xxhdpi
+│   │               │   └── ic_launcher.png
+│   │               ├── mipmap-xxxhdpi
+│   │               │   └── ic_launcher.png
+│   │               ├── values
+│   │               │   ├── strings.xml
+│   │               │   └── styles.xml
+│   │               ├── values-large
+│   │               │   └── refs.xml
+│   │               └── values-sw600dp
+│   │                   └── refs.xml
+│   ├── build.gradle
+│   ├── gradle
+│   │   └── wrapper
+│   │       ├── gradle-wrapper.jar
+│   │       └── gradle-wrapper.properties
+│   ├── gradle.properties
+│   ├── gradlew
+│   ├── gradlew.bat
+│   └── settings.gradle
+├── books-core
+│   ├── pom.xml
+│   └── src
+│       ├── dev
+│       │   └── resources
+│       │       └── db
+│       │           └── update
+│       │               └── dbupdate-000-1.sql
+│       ├── main
+│       │   ├── java
+│       │   │   └── com
+│       │   │       └── sismics
+│       │   │           ├── books
+│       │   │           │   └── core
+│       │   │           │       ├── constant
+│       │   │           │       │   ├── AppId.java
+│       │   │           │       │   ├── ConfigType.java
+│       │   │           │       │   └── Constants.java
+│       │   │           │       ├── dao
+│       │   │           │       │   ├── file
+│       │   │           │       │   │   └── theme
+│       │   │           │       │   │       └── ThemeDao.java
+│       │   │           │       │   └── jpa
+│       │   │           │       │       ├── AuthenticationTokenDao.java
+│       │   │           │       │       ├── BookDao.java
+│       │   │           │       │       ├── ConfigDao.java
+│       │   │           │       │       ├── criteria
+│       │   │           │       │       │   ├── UserBookCriteria.java
+│       │   │           │       │       │   └── UserContactCriteria.java
+│       │   │           │       │       ├── dto
+│       │   │           │       │       │   ├── TagDto.java
+│       │   │           │       │       │   ├── UserAppDto.java
+│       │   │           │       │       │   ├── UserBookDto.java
+│       │   │           │       │       │   ├── UserContactDto.java
+│       │   │           │       │       │   └── UserDto.java
+│       │   │           │       │       ├── LocaleDao.java
+│       │   │           │       │       ├── RoleBaseFunctionDao.java
+│       │   │           │       │       ├── TagDao.java
+│       │   │           │       │       ├── UserAppDao.java
+│       │   │           │       │       ├── UserBookDao.java
+│       │   │           │       │       ├── UserContactDao.java
+│       │   │           │       │       └── UserDao.java
+│       │   │           │       ├── event
+│       │   │           │       │   ├── BookImportedEvent.java
+│       │   │           │       │   └── UserAppCreatedEvent.java
+│       │   │           │       ├── listener
+│       │   │           │       │   ├── async
+│       │   │           │       │   │   ├── BookImportAsyncListener.java
+│       │   │           │       │   │   └── UserAppCreatedAsyncListener.java
+│       │   │           │       │   └── sync
+│       │   │           │       │       └── DeadEventListener.java
+│       │   │           │       ├── model
+│       │   │           │       │   ├── context
+│       │   │           │       │   │   └── AppContext.java
+│       │   │           │       │   └── jpa
+│       │   │           │       │       ├── App.java
+│       │   │           │       │       ├── AuthenticationToken.java
+│       │   │           │       │       ├── BaseFunction.java
+│       │   │           │       │       ├── Book.java
+│       │   │           │       │       ├── Config.java
+│       │   │           │       │       ├── Locale.java
+│       │   │           │       │       ├── RoleBaseFunction.java
+│       │   │           │       │       ├── Role.java
+│       │   │           │       │       ├── Tag.java
+│       │   │           │       │       ├── UserApp.java
+│       │   │           │       │       ├── UserBook.java
+│       │   │           │       │       ├── UserBookTag.java
+│       │   │           │       │       ├── UserContact.java
+│       │   │           │       │       └── User.java
+│       │   │           │       ├── service
+│       │   │           │       │   ├── BookDataService.java
+│       │   │           │       │   ├── facebook
+│       │   │           │       │   │   ├── AuthenticationException.java
+│       │   │           │       │   │   └── PermissionException.java
+│       │   │           │       │   └── FacebookService.java
+│       │   │           │       └── util
+│       │   │           │           ├── ConfigUtil.java
+│       │   │           │           ├── DirectoryUtil.java
+│       │   │           │           ├── EntityManagerUtil.java
+│       │   │           │           ├── jpa
+│       │   │           │           │   ├── PaginatedList.java
+│       │   │           │           │   ├── PaginatedLists.java
+│       │   │           │           │   ├── QueryParam.java
+│       │   │           │           │   ├── QueryUtil.java
+│       │   │           │           │   └── SortCriteria.java
+│       │   │           │           ├── math
+│       │   │           │           │   └── MathUtil.java
+│       │   │           │           ├── mime
+│       │   │           │           │   ├── MimeType.java
+│       │   │           │           │   └── MimeTypeUtil.java
+│       │   │           │           ├── StreamUtil.java
+│       │   │           │           └── TransactionUtil.java
+│       │   │           └── util
+│       │   │               ├── context
+│       │   │               │   └── ThreadLocalContext.java
+│       │   │               ├── EnvironmentUtil.java
+│       │   │               ├── HttpUtil.java
+│       │   │               ├── jpa
+│       │   │               │   ├── DbOpenHelper.java
+│       │   │               │   ├── EMF.java
+│       │   │               │   ├── ManagedProvidedConnectionHelper.java
+│       │   │               │   ├── SessionUtil.java
+│       │   │               │   └── SuppliedConnectionProviderConnectionHelper.java
+│       │   │               ├── LocaleUtil.java
+│       │   │               ├── log4j
+│       │   │               │   ├── LogCriteria.java
+│       │   │               │   ├── LogEntry.java
+│       │   │               │   └── MemoryAppender.java
+│       │   │               └── ResourceUtil.java
+│       │   └── resources
+│       │       ├── config.properties
+│       │       ├── db
+│       │       │   └── update
+│       │       │       ├── dbupdate-000-0.sql
+│       │       │       └── dbupdate-001-0.sql
+│       │       └── META-INF
+│       │           └── persistence.xml
+│       ├── prod
+│       │   └── resources
+│       │       └── db
+│       │           └── update
+│       │               └── dbupdate-000-1.sql
+│       └── test
+│           ├── java
+│           │   └── com
+│           │       └── sismics
+│           │           ├── books
+│           │           │   ├── BaseTransactionalTest.java
+│           │           │   └── core
+│           │           │       ├── dao
+│           │           │       │   └── jpa
+│           │           │       │       └── TestJpa.java
+│           │           │       └── util
+│           │           │           └── math
+│           │           │               └── MathUtilTest.java
+│           │           └── util
+│           │               └── TestResourceUtil.java
+│           └── resources
+│               ├── file
+│               │   ├── udhr_encrypted.pdf
+│               │   └── udhr.pdf
+│               ├── hibernate.properties
+│               └── log4j.properties
+├── books-parent
+│   ├── pom.xml
+│   └── TODO.md
+├── books-web
+│   ├── pom.xml
+│   └── src
+│       ├── dev
+│       │   ├── main
+│       │   │   └── webapp
+│       │   │       └── web-override.xml
+│       │   └── resources
+│       │       ├── config.properties
+│       │       ├── hibernate.properties
+│       │       └── log4j.properties
+│       ├── main
+│       │   ├── java
+│       │   │   └── com
+│       │   │       └── sismics
+│       │   │           └── books
+│       │   │               └── rest
+│       │   │                   ├── constant
+│       │   │                   │   └── BaseFunction.java
+│       │   │                   └── resource
+│       │   │                       ├── AppResource.java
+│       │   │                       ├── BaseResource.java
+│       │   │                       ├── BookResource.java
+│       │   │                       ├── ConnectResource.java
+│       │   │                       ├── LocaleResource.java
+│       │   │                       ├── TagResource.java
+│       │   │                       ├── TextPlainMessageBodyWriter.java
+│       │   │                       ├── ThemeResource.java
+│       │   │                       └── UserResource.java
+│       │   ├── resources
+│       │   │   └── dummy.png
+│       │   └── webapp
+│       │       ├── app
+│       │       │   ├── app.js
+│       │       │   ├── controller
+│       │       │   │   ├── BookAdd.js
+│       │       │   │   ├── BookAddManual.js
+│       │       │   │   ├── BookEdit.js
+│       │       │   │   ├── Book.js
+│       │       │   │   ├── BookView.js
+│       │       │   │   ├── Login.js
+│       │       │   │   ├── Main.js
+│       │       │   │   ├── Navigation.js
+│       │       │   │   ├── SettingsAccount.js
+│       │       │   │   ├── SettingsDefault.js
+│       │       │   │   ├── Settings.js
+│       │       │   │   ├── SettingsLog.js
+│       │       │   │   ├── SettingsSession.js
+│       │       │   │   ├── SettingsUserEdit.js
+│       │       │   │   ├── SettingsUser.js
+│       │       │   │   └── Tag.js
+│       │       │   ├── directive
+│       │       │   │   ├── File.js
+│       │       │   │   ├── InfiniteLoad.js
+│       │       │   │   └── InlineEdit.js
+│       │       │   ├── filter
+│       │       │   │   └── Newline.js
+│       │       │   └── service
+│       │       │       └── User.js
+│       │       ├── favicon.png
+│       │       ├── fonts
+│       │       │   ├── glyphicons-halflings-regular.eot
+│       │       │   ├── glyphicons-halflings-regular.svg
+│       │       │   ├── glyphicons-halflings-regular.ttf
+│       │       │   └── glyphicons-halflings-regular.woff
+│       │       ├── img
+│       │       │   ├── some images
+│       │       ├── index.html
+│       │       ├── lib
+│       │       │   ├── angular
+│       │       │   │   ├── angular.js
+│       │       │   │   └── angular-sanitize.js
+│       │       │   ├── angular.colorpicker.js
+│       │       │   ├── angular.restangular.js
+│       │       │   ├── angular.ui-router.js
+│       │       │   ├── angular.ui-utils.js
+│       │       │   ├── colorpicker.js
+│       │       │   ├── jquery.js
+│       │       │   ├── less.js
+│       │       │   └── underscore.js
+│       │       ├── locale
+│       │       │   └── messages.en.js
+│       │       ├── partial
+│       │       │   ├── book.add.html
+│       │       │   ├── book.edit.html
+│       │       │   ├── book.html
+│       │       │   ├── book.view.html
+│       │       │   ├── login.html
+│       │       │   ├── main.html
+│       │       │   ├── settings.account.html
+│       │       │   ├── settings.default.html
+│       │       │   ├── settings.html
+│       │       │   ├── settings.log.html
+│       │       │   ├── settings.session.html
+│       │       │   ├── settings.user.edit.html
+│       │       │   ├── settings.user.html
+│       │       │   └── tag.html
+│       │       ├── style
+│       │       │   ├── bootstrap.css
+│       │       │   ├── colorpicker.css
+│       │       │   ├── main.less
+│       │       │   └── theme
+│       │       │       └── default.less
+│       │       └── WEB-INF
+│       │           └── web.xml
+│       ├── prod
+│       │   └── resources
+│       │       ├── config.properties
+│       │       └── log4j.properties
+│       └── test
+│           ├── java
+│           │   └── com
+│           │       └── sismics
+│           │           └── books
+│           │               └── rest
+│           │                   ├── model
+│           │                   │   └── FacebookUser.java
+│           │                   ├── TestAppResource.java
+│           │                   ├── TestBookResource.java
+│           │                   ├── TestConnectResource.java
+│           │                   ├── TestLocaleResource.java
+│           │                   ├── TestSecurity.java
+│           │                   ├── TestTagResource.java
+│           │                   ├── TestThemeResource.java
+│           │                   └── TestUserResource.java
+│           └── resources
+│               ├── hibernate.properties
+│               ├── import
+│               │   └── goodreads.csv
+│               └── log4j.properties
+├── books-web-common
+│   ├── pom.xml
+│   └── src
+│       ├── main
+│       │   └── java
+│       │       └── com
+│       │           └── sismics
+│       │               ├── rest
+│       │               │   ├── exception
+│       │               │   │   ├── ClientException.java
+│       │               │   │   ├── ForbiddenClientException.java
+│       │               │   │   └── ServerException.java
+│       │               │   ├── resource
+│       │               │   │   └── GenericExceptionMapper.java
+│       │               │   └── util
+│       │               │       ├── JsonUtil.java
+│       │               │       └── ValidationUtil.java
+│       │               ├── security
+│       │               │   ├── AnonymousPrincipal.java
+│       │               │   ├── IPrincipal.java
+│       │               │   └── UserPrincipal.java
+│       │               └── util
+│       │                   └── filter
+│       │                       ├── RequestContextFilter.java
+│       │                       └── TokenBasedSecurityFilter.java
+│       └── test
+│           └── java
+│               └── com
+│                   └── sismics
+│                       └── books
+│                           └── rest
+│                               ├── BaseJerseyTest.java
+│                               ├── descriptor
+│                               │   └── JerseyTestWebAppDescriptorFactory.java
+│                               ├── filter
+│                               │   └── CookieAuthenticationFilter.java
+│                               └── util
+│                                   ├── ClientUtil.java
+│                                   └── TestValidationUtil.java
+├── books.xml
+├── build.sh
+├── CONTRIBUTING.md
+├── Dockerfile
+├── LICENSE
+├── our-notes
+│   ├── tree.txt
+│   ├── vineeth-assets
+│   └── vineeth.md
+├── README.md
+└── run-service.sh
+
+159 directories, 513 files
