@@ -317,4 +317,3 @@ public class BookTagUpdate extends BaseResource{
                 .build();
     }
 }
-

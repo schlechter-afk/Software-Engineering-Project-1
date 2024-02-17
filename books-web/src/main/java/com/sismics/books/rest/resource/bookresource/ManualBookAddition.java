@@ -5,9 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.ws.rs.FormParam;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.PUT;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
@@ -32,18 +30,31 @@ import com.sismics.rest.util.ValidationUtil;
 import com.sismics.books.rest.resource.BaseResource;
 
 @Path("/book/manual")
-public class ManualBookAddition extends BaseResource{
+public class ManualBookAddition extends BaseResource {
+    public static class BookParams {
+        public String title;
+        public String subtitle;
+        public String author;
+        public String description;
+        public String isbn10;
+        public String isbn13;
+        public Long pageCount;
+        public String language;
+        public String publishDateStr;
+        public Date publishDate;
+        public List<String> tagList;
+    }
+
     /**
-     * Add a book book manually.
-     * 
-     * @param title Title
-     * @param description Description
+     * Add a book manually.
+     *
+     * @param params Book parameters
      * @return Response
      * @throws JSONException
      */
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
-    public Response add(
+        public Response add(
             @FormParam("title") String title,
             @FormParam("subtitle") String subtitle,
             @FormParam("author") String author,
@@ -58,71 +69,106 @@ public class ManualBookAddition extends BaseResource{
             throw new ForbiddenClientException();
         }
         
-        // Validate input data
-        title = ValidationUtil.validateLength(title, "title", 1, 255, false);
-        subtitle = ValidationUtil.validateLength(subtitle, "subtitle", 1, 255, true);
-        author = ValidationUtil.validateLength(author, "author", 1, 255, false);
-        description = ValidationUtil.validateLength(description, "description", 1, 4000, true);
-        isbn10 = ValidationUtil.validateLength(isbn10, "isbn10", 10, 10, true);
-        isbn13 = ValidationUtil.validateLength(isbn13, "isbn13", 13, 13, true);
-        language = ValidationUtil.validateLength(language, "language", 2, 2, true);
-        Date publishDate = ValidationUtil.validateDate(publishDateStr, "publish_date", false);
-        
-        if (Strings.isNullOrEmpty(isbn10) && Strings.isNullOrEmpty(isbn13)) {
+        BookParams valParams = new BookParams();
+
+        valParams.title = title;
+        valParams.subtitle = subtitle;
+        valParams.author = author;
+        valParams.description = description;
+        valParams.isbn10 = isbn10;
+        valParams.isbn13 = isbn13;
+        valParams.language = language;
+        valParams.pageCount = pageCount;
+        valParams.publishDateStr = publishDateStr;
+
+        valParams = validateInputData(valParams);
+
+        BookDao bookDao = new BookDao();
+        checkIfBookExists(valParams.isbn10, valParams.isbn13, bookDao);
+
+        Book book = createBook(valParams);
+        UserBook userBook = createUserBook(book);
+
+        updateTags(valParams.tagList, userBook);
+
+        JSONObject response = new JSONObject();
+        response.put("id", userBook.getId());
+        return Response.ok().entity(response).build();
+    }
+    
+    private BookParams validateInputData(BookParams params) throws JSONException{
+        params.title = ValidationUtil.validateLength(params.title, "title", 1, 255, false);
+        params.subtitle = ValidationUtil.validateLength(params.subtitle, "subtitle", 1, 255, true);
+        params.author = ValidationUtil.validateLength(params.author, "author", 1, 255, false);
+        params.description = ValidationUtil.validateLength(params.description, "description", 1, 4000, true);
+        params.isbn10 = ValidationUtil.validateLength(params.isbn10, "isbn10", 10, 10, true);
+        params.isbn13 = ValidationUtil.validateLength(params.isbn13, "isbn13", 13, 13, true);
+        params.language = ValidationUtil.validateLength(params.language, "language", 2, 2, true);
+        params.publishDate = ValidationUtil.validateDate(params.publishDateStr, "publish_date", false);
+
+        if (Strings.isNullOrEmpty(params.isbn10) && Strings.isNullOrEmpty(params.isbn13)) {
             throw new ClientException("ValidationError", "At least one ISBN number is mandatory");
         }
-        
-        // Check if this book is not already in database
-        BookDao bookDao = new BookDao();
+
+        return params;
+    }
+
+    private void checkIfBookExists(String isbn10, String isbn13, BookDao bookDao) throws JSONException{
         Book bookIsbn10 = bookDao.getByIsbn(isbn10);
         Book bookIsbn13 = bookDao.getByIsbn(isbn13);
         if (bookIsbn10 != null || bookIsbn13 != null) {
             throw new ClientException("BookAlreadyAdded", "Book already added");
         }
-        
-        // Create the book
+    }
+
+    private Book createBook(BookParams params) {
         Book book = new Book();
         book.setId(UUID.randomUUID().toString());
 
-        if (title != null) {
-            book.setTitle(title);
+        if (params.title != null) {
+            book.setTitle(params.title);
         }
-        if (subtitle != null) {
-            book.setSubtitle(subtitle);
+        if (params.subtitle != null) {
+            book.setSubtitle(params.subtitle);
         }
-        if (author != null) {
-            book.setAuthor(author);
+        if (params.author != null) {
+            book.setAuthor(params.author);
         }
-        if (description != null) {
-            book.setDescription(description);
+        if (params.description != null) {
+            book.setDescription(params.description);
         }
-        if (isbn10 != null) {
-            book.setIsbn10(isbn10);
+        if (params.isbn10 != null) {
+            book.setIsbn10(params.isbn10);
         }
-        if (isbn13 != null) {
-            book.setIsbn13(isbn13);
+        if (params.isbn13 != null) {
+            book.setIsbn13(params.isbn13);
         }
-        if (pageCount != null) {
-            book.setPageCount(pageCount);
+        if (params.pageCount != null) {
+            book.setPageCount(params.pageCount);
         }
-        if (language != null) {
-            book.setLanguage(language);
+        if (params.language != null) {
+            book.setLanguage(params.language);
         }
-        if (publishDate != null) {
-            book.setPublishDate(publishDate);
+        if (params.publishDate != null) {
+            book.setPublishDate(params.publishDate);
         }
-        
-        bookDao.create(book);
-        
-        // Create the user book
+
+        new BookDao().create(book);
+        return book;
+    }
+
+    private UserBook createUserBook(Book book) {
         UserBookDao userBookDao = new UserBookDao();
         UserBook userBook = new UserBook();
         userBook.setUserId(principal.getId());
         userBook.setBookId(book.getId());
         userBook.setCreateDate(new Date());
         userBookDao.create(userBook);
-        
-        // Update tags
+
+        return userBook;
+    }
+
+    private void updateTags (List<String> tagList, UserBook userBook) throws JSONException{
         if (tagList != null) {
             TagDao tagDao = new TagDao();
             Set<String> tagSet = new HashSet<>();
@@ -139,10 +185,5 @@ public class ManualBookAddition extends BaseResource{
             }
             tagDao.updateTagList(userBook.getId(), tagSet);
         }
-        
-        // Returns the book ID
-        JSONObject response = new JSONObject();
-        response.put("id", userBook.getId());
-        return Response.ok().entity(response).build();
     }
 }
