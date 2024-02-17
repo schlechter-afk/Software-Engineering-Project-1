@@ -25,8 +25,6 @@ public class AppContext {
     /**
      * Singleton instance.
      */
-    private static AppContext instance;
-
     /**
      * Event bus.
      */
@@ -92,10 +90,11 @@ public class AppContext {
      * @return Application context
      */
     public static AppContext getInstance() {
-        if (instance == null) {
-            instance = new AppContext();
-        }
-        return instance;
+        return AppContextHolder.INSTANCE;
+    }
+
+    private static class AppContextHolder {
+        private static final AppContext INSTANCE = new AppContext();
     }
     
     /**
