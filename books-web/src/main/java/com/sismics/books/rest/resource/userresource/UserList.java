@@ -1,13 +1,8 @@
 package com.sismics.books.rest.resource.userresource;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
-import javax.servlet.http.Cookie;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -20,13 +15,13 @@ import org.codehaus.jettison.json.JSONObject;
 
 import com.sismics.books.core.dao.jpa.UserDao;
 import com.sismics.books.core.dao.jpa.dto.UserDto;
-import com.sismics.books.core.model.jpa.User;
 import com.sismics.books.core.util.jpa.PaginatedList;
 import com.sismics.books.core.util.jpa.PaginatedLists;
 import com.sismics.books.core.util.jpa.SortCriteria;
 import com.sismics.books.rest.constant.BaseFunction;
-import com.sismics.rest.exception.ClientException;
 import com.sismics.rest.exception.ForbiddenClientException;
+
+import com.sismics.books.rest.resource.BaseResource;
 
 @Path("/user/list")
 public class UserList extends BaseResource {
