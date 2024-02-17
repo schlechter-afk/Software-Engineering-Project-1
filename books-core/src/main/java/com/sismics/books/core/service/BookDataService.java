@@ -178,7 +178,7 @@ public class BookDataService extends AbstractIdleService {
             JsonNode identifier = identifiers.next();
             String type = identifier.get("type").getTextValue();
             String value = identifier.get("identifier").getTextValue();
-            if (type.equals("ISBN_10") {
+            if (type.equals("ISBN_10")) {
                 book.setIsbn10(value);
             } else if (type.equals("ISBN_13")) {
                 book.setIsbn13(value);
