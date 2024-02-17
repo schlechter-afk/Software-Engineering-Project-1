@@ -11,6 +11,12 @@ import java.io.File;
  * @author jtremeaux
  */
 public class DirectoryUtil {
+
+    private DirectoryUtil() {
+        // Empty constructor
+    }
+
+
     /**
      * Returns the base data directory.
      * 
