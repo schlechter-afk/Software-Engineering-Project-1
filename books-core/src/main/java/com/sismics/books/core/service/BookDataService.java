@@ -179,9 +179,9 @@ public class BookDataService extends AbstractIdleService {
             JsonNode identifier = identifiers.next();
             String type = identifier.get("type").getTextValue();
             String value = identifier.get("identifier").getTextValue();
-            if (type == "ISBN_10") {
+            if (type.equals("ISBN_10") {
                 book.setIsbn10(value);
-            } else if (type == "ISBN_13") {
+            } else if (type.equals("ISBN_13")) {
                 book.setIsbn13(value);
             }
         }
@@ -321,8 +321,6 @@ public class BookDataService extends AbstractIdleService {
             
             Path imagePath = Paths.get(DirectoryUtil.getBookDirectory().getPath(), book.getId());
             Files.copy(inputStream, imagePath, StandardCopyOption.REPLACE_EXISTING);
-            
-            // TODO Rescale to 192px width max if necessary
         }
     }
     
