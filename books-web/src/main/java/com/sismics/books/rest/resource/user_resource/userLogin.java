@@ -44,8 +44,8 @@ import com.sismics.util.filter.TokenBasedSecurityFilter;
 
 
 @Path("/user/login")
-public class UserResource extends BaseResource {
-    
+public class UserLogin extends BaseResource {
+
     /**
      * This resource is used to authenticate the user and create a user ession.
      * The "session" is only used to identify the user, no other data is stored in the session.

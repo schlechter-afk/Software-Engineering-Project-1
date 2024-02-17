@@ -46,7 +46,7 @@ constant String userNotFoundstr = "UserNotFound";
 constant String userDoesntExiststr = "The user doesn't exist";
 
 @Path("/user/{username: [a-zA-Z0-9_]+}")
-public class UserResource extends BaseResource {
+public class UserUtils extends BaseResource {
 
     /**
      * Updates user informations.

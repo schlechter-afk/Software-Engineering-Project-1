@@ -43,7 +43,7 @@ import com.sismics.security.UserPrincipal;
 import com.sismics.util.filter.TokenBasedSecurityFilter;
 
 @Path("/user/check_username")
-public class UserResource extends BaseResource {
+public class UserCheck extends BaseResource {
     
     /**
      * Checks if a username is available. Search only on active accounts.

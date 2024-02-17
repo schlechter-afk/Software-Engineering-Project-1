@@ -29,7 +29,7 @@ import com.sismics.rest.exception.ClientException;
 import com.sismics.rest.exception.ForbiddenClientException;
 
 @Path("/user/list")
-public class UserResource extends BaseResource {
+public class UserList extends BaseResource {
 
     /**
      * Returns all active users.

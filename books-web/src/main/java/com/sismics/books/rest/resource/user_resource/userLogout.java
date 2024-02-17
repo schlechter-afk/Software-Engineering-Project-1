@@ -43,8 +43,8 @@ import com.sismics.security.UserPrincipal;
 import com.sismics.util.filter.TokenBasedSecurityFilter;
 
 @Path("/user/logout")
-public class UserResource extends BaseResource {
-    
+public class UserLogout extends BaseResource {
+
     /**
      * Logs out the user and deletes the active session.
      * 

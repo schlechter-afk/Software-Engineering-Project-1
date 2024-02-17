@@ -43,7 +43,7 @@ import com.sismics.security.UserPrincipal;
 import com.sismics.util.filter.TokenBasedSecurityFilter;
 
 @Path("/user/session")
-public class UserResource extends BaseResource {
+public class UserSession extends BaseResource {
 
     /**
      * Returns all active sessions.
